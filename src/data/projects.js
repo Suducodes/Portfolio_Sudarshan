@@ -1,0 +1,75 @@
+// Sudu's work — Parallel-Universe-style gallery. Drop /public/work-<id>.jpg
+// to replace the generative motif in any frame. More projects to come.
+export const projects = [
+  {
+    id: 'bio-vision',
+    image: '/work-bio-vision.jpg',
+    index: '01',
+    title: 'BIO-VISION',
+    subtitle: 'Gesture-Controlled 3D Medical Organ Viewer',
+    date: '2024 — Now',
+    color: '#00E5C4',
+    motif: 'ecg',
+    featured: 'EMBC 2026 · Paper #4706 · UnivLabs Technologies',
+    tags: ['Research', 'IEEE Published', 'Deployed'],
+    detail:
+      'A fully hands-free 3D medical-model viewer for sterile operating rooms — surgeons navigate anatomy without touching a surface. Published as IEEE EMBC 2026: “Zero-Footprint Virtual Dissection.”',
+    stack: ['TypeScript', 'MediaPipe', 'Three.js', 'Cornerstone.js'],
+  },
+  {
+    id: 'medmesh',
+    image: '/work-medmesh.jpg',
+    index: '02',
+    title: 'MEDMESH',
+    subtitle: 'DICOM-to-3D Organ Mesh Conversion Pipeline',
+    date: '2025 — Now',
+    color: '#8b7bd8',
+    motif: 'hex',
+    tags: ['Python', 'SimpleITK', 'trimesh'],
+    detail:
+      'A local pipeline that turns CT DICOM series into GLB organ meshes — marching cubes, hollow-lung fix via binary fill, trachea isolation through morphological erosion/dilation.',
+    stack: ['Python', 'SimpleITK', 'scikit-image', 'trimesh'],
+  },
+  {
+    id: 'telestrator',
+    image: '/work-telestrator.jpg',
+    index: '03',
+    title: 'TELESTRATOR PRO',
+    subtitle: 'Gesture-Controlled Surgical Annotation Tool',
+    date: '2025',
+    color: '#00E5C4',
+    motif: 'wave',
+    tags: ['MediaPipe', 'OneEuro', 'Web'],
+    detail:
+      'A gesture-driven real-time annotation overlay for surgical video — three-stage cursor smoothing (MedianBuf → OneEuro → draw-mode lerp) and dual-hand control where the off-hand is a precision speed-boost.',
+    stack: ['HTML / JS', 'MediaPipe', 'OneEuro filter'],
+  },
+  {
+    id: 'annairah',
+    image: '/work-annairah.jpg',
+    index: '04',
+    title: 'TEAM ANNAIRAH',
+    subtitle: 'Ambulance Tracking & Emergency Response',
+    date: '2023',
+    color: '#E8A33D',
+    motif: 'scatter',
+    tags: ['GPS', 'IoT', 'Prototype'],
+    detail:
+      'A real-time ambulance-tracking and hospital-dispatch system aimed at cutting emergency response times in urban India — a proof of concept around GPS routing and hospital coordination.',
+    stack: ['GPS routing', 'Realtime', 'Dispatch'],
+  },
+  {
+    id: 'bio-wasteland',
+    image: '/work-bio-wasteland.jpg',
+    index: '05',
+    title: 'BIO-WASTELAND',
+    subtitle: 'Educational 3D Biomedical Waste Game',
+    date: '2024',
+    color: '#C1121F',
+    motif: 'hex',
+    tags: ['3D', 'Education', 'Game'],
+    detail:
+      'An immersive 3D educational game teaching biomedical-waste classification and safe-handling protocols — built for nursing and paramedic training in resource-limited settings.',
+    stack: ['Game design', '3D', 'Training'],
+  },
+]

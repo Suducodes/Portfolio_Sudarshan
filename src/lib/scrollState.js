@@ -1,0 +1,8 @@
+// Mutable, render-loop-friendly scroll state shared between Lenis (writer)
+// and the WebGL scene (reader). Avoids React re-renders on every scroll tick.
+export const scrollState = {
+  progress: 0, // 0..1 down the page
+  velocity: 0,
+  mouseX: 0.5,
+  mouseY: 0.5,
+}

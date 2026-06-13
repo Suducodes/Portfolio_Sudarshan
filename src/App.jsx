@@ -1,0 +1,146 @@
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
+
+import Loader from './components/Loader'
+import Nav from './components/Nav'
+import ScrollHud from './components/ScrollHud'
+import VitalHud from './components/VitalHud'
+import ProjectDetail from './components/ProjectDetail'
+import { projects } from './data/projects'
+
+import Hero from './sections/Hero'
+import Manifesto from './sections/Manifesto'
+import Tagline from './sections/Tagline'
+import Works from './sections/Works'
+import Research from './sections/Research'
+import Skills from './sections/Skills'
+import Origin from './sections/Origin'
+import Recognition from './sections/Recognition'
+import Contact from './sections/Contact'
+import Footer from './sections/Footer'
+
+import { useSmoothScroll } from './hooks/useSmoothScroll'
+import { useAmbientSound } from './hooks/useAmbientSound'
+import { usePrefersReducedMotion } from './hooks/useMediaQuery'
+import { scrollState } from './lib/scrollState'
+import { sfx } from './lib/sfx'
+
+const BackgroundFX = lazy(() => import('./components/fx/BackgroundFX'))
+
+export default function App() {
+  const [ready, setReady] = useState(false)
+  const [openIdx, setOpenIdx] = useState(null)
+  const reducedMotion = usePrefersReducedMotion()
+  const { on: soundOn, toggle: toggleSound } = useAmbientSound()
+  const lenisRef = useRef(null)
+
+  useEffect(() => {
+    sfx.setEnabled(soundOn)
+  }, [soundOn])
+
+  const openProject = useCallback((i) => {
+    setOpenIdx(i)
+    sfx.whoosh()
+    lenisRef.current?.stop()
+  }, [])
+  const closeProject = useCallback(() => {
+    setOpenIdx(null)
+    lenisRef.current?.start()
+  }, [])
+  const navProject = useCallback(
+    (dir) => setOpenIdx((idx) => (idx + dir + projects.length) % projects.length),
+    []
+  )
+
+  useSmoothScroll({
+    enabled: !reducedMotion,
+    onReady: (lenis) => {
+      lenisRef.current = lenis
+      lenis.on('scroll', ({ progress }) => {
+        scrollState.progress = progress || 0
+      })
+    },
+  })
+
+  // native-scroll fallback for reduced motion (Lenis is disabled there)
+  useEffect(() => {
+    if (!reducedMotion) return
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      scrollState.progress = max > 0 ? window.scrollY / max : 0
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [reducedMotion])
+
+  const scrollTo = useCallback((target) => {
+    const lenis = lenisRef.current
+    if (target === 0) {
+      lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+    const el = document.querySelector(target)
+    if (!el) return
+    const y = el.getBoundingClientRect().top + window.scrollY - 8
+    if (lenis) lenis.scrollTo(y)
+    else window.scrollTo({ top: y, behavior: 'smooth' })
+  }, [])
+
+  return (
+    <div className="grain relative">
+      {!ready && <Loader onDone={() => setReady(true)} />}
+
+      {/* atmospheric WebGL backdrop over a cheap CSS haze */}
+      {!reducedMotion ? (
+        <div
+          className="fixed inset-0 z-0 bg-void"
+          style={{
+            backgroundImage:
+              'radial-gradient(70% 55% at 72% 38%, rgba(0,229,196,0.10), transparent 60%), radial-gradient(50% 50% at 25% 80%, rgba(139,123,216,0.07), transparent 70%)',
+          }}
+        >
+          <Suspense fallback={<div className="h-full w-full bg-void" />}>
+            <BackgroundFX />
+          </Suspense>
+        </div>
+      ) : (
+        <div className="fixed inset-0 z-0 bg-void">
+          <div className="absolute left-1/2 top-1/3 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-teal/30 to-transparent" />
+        </div>
+      )}
+
+      {/* readability scrim — darkens the text side, lets the helix glow on the right */}
+      <div className="pointer-events-none fixed inset-0 z-[5] bg-gradient-to-r from-void/85 via-void/35 to-transparent" />
+
+      {/* cinematic vignette — binds the imagery + UI into one frame */}
+      <div
+        className="pointer-events-none fixed inset-0 z-[45]"
+        style={{ background: 'radial-gradient(125% 100% at 50% 42%, transparent 56%, rgba(0,0,0,0.5) 100%)' }}
+      />
+
+      <Nav scrollTo={scrollTo} soundOn={soundOn} onToggleSound={toggleSound} />
+      <ScrollHud />
+      <VitalHud beating={soundOn} />
+
+      <main className="relative z-10">
+        <Hero ready={ready} />
+        <Manifesto />
+        <Tagline />
+        <Works onOpen={openProject} />
+        <Research />
+        <Skills />
+        <Origin />
+        <Recognition />
+        <Contact />
+        <Footer scrollTo={scrollTo} />
+      </main>
+
+      <ProjectDetail
+        project={openIdx != null ? projects[openIdx] : null}
+        index={openIdx ?? 0}
+        total={projects.length}
+        onClose={closeProject}
+        onNav={navProject}
+      />
+    </div>
+  )
+}

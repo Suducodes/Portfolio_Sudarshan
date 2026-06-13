@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 640" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#00E5C4" stop-opacity="0.55"/>
+      <stop offset="0.7" stop-color="#0a3b38" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#070A0D" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- shoulders + head silhouette -->
+  <path d="M250 120c52 0 92 44 92 104 0 42-20 78-50 96 64 14 118 60 138 132 8 30 12 64 12 88H58c0-24 4-58 12-88 20-72 74-118 138-132-30-18-50-54-50-96 0-60 40-104 92-104z" fill="url(#g)"/>
+  <text x="250" y="600" text-anchor="middle" font-family="sans-serif" font-size="22" letter-spacing="6" fill="#F0EDE6" fill-opacity="0.35">DROP /sudu.png</text>
+</svg>
