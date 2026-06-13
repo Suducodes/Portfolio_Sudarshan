@@ -5,4 +5,6 @@ export const scrollState = {
   velocity: 0,
   mouseX: 0.5,
   mouseY: 0.5,
+  worksActive: false, // inside the Works descent section
+  worksProgress: 0, // 0..1 through the Works descent
 }
