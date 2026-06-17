@@ -60,12 +60,6 @@ export default function ProjectDetail({ project, index, total, onClose, onNav })
             >
               <div className="relative h-full w-full overflow-hidden bg-void">
                 <ProjectMotif motif={project.motif} color={project.color} className="absolute inset-0 h-full w-full" />
-                <img
-                  src={asset(project.image)}
-                  alt={project.title}
-                  onError={(e) => (e.currentTarget.style.display = 'none')}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
                 <div
                   className="pointer-events-none absolute inset-0"
                   style={{ background: `radial-gradient(130% 100% at 50% 120%, ${project.color}22, transparent 55%)` }}

@@ -7,4 +7,5 @@ export const scrollState = {
   mouseY: 0.5,
   worksActive: false, // inside the Works descent section
   worksProgress: 0, // 0..1 through the Works descent
+  heartReveal: 0, // 0 hidden → 1 present; the heart pops in just before Works
 }

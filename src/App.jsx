@@ -72,6 +72,28 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [reducedMotion])
 
+  // the heart stays hidden until ~one screen before Work, then pops in
+  useEffect(() => {
+    let raf = 0
+    const compute = () => {
+      raf = 0
+      const work = document.getElementById('work')
+      if (!work) return
+      const top = work.getBoundingClientRect().top
+      const vh = window.innerHeight
+      scrollState.heartReveal = Math.max(0, Math.min(1, 1 - top / (vh * 0.7)))
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(compute)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    const t = setTimeout(compute, 400)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      clearTimeout(t)
+    }
+  }, [])
+
   const scrollTo = useCallback((target) => {
     const lenis = lenisRef.current
     if (target === 0) {

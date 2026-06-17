@@ -3,6 +3,8 @@ import { Canvas } from '@react-three/fiber'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import NeuralNet from './NeuralNet'
 import Heart from './Heart'
+import HeartDust from './HeartDust'
+import SafeModel from './SafeModel'
 
 export default function BackgroundFX() {
   return (
@@ -20,10 +22,13 @@ export default function BackgroundFX() {
       <pointLight position={[0, -1.2, 2.5]} intensity={7} distance={9} color="#C1121F" />
       {/* faint ambient depth */}
       <NeuralNet count={28} />
-      {/* the centerpiece — a real beating heart */}
-      <Suspense fallback={null}>
-        <Heart />
-      </Suspense>
+      {/* the centerpiece — a real beating heart + its confetti cloud */}
+      <SafeModel>
+        <Suspense fallback={null}>
+          <Heart />
+        </Suspense>
+      </SafeModel>
+      <HeartDust />
       <EffectComposer disableNormalPass multisampling={0}>
         <Bloom luminanceThreshold={0.6} intensity={0.45} radius={0.5} mipmapBlur />
       </EffectComposer>
