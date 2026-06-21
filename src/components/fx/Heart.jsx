@@ -5,51 +5,47 @@ import * as THREE from 'three'
 import { scrollState } from '../../lib/scrollState'
 import { asset } from '../../lib/asset'
 
-// 62 BPM squeeze
+const DEG = Math.PI / 180
+// 62 BPM squeeze — a faint pulse, never a real size change
 const g = (x, c, s, a) => a * Math.exp(-((x - c) * (x - c)) / (2 * s * s))
 const beat = (p) => g(((p % 1) + 1) % 1, 0.34, 0.05, 1)
 const lerp = THREE.MathUtils.lerp
-// overshoot ease for the dramatic pop-in
-const easeOutBack = (x) => {
-  const c1 = 1.70158
-  const c3 = c1 + 1
-  return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2)
-}
+
+const SCALE = 4.6 // FIXED — the heart never grows, shrinks or pops
+const TOP_Y = -3.2 // wp=0 → the top of the heart sits at screen centre
+const BOTTOM_Y = 3.2 // wp=1 → the bottom (apex) reaches screen centre
 
 /**
- * The heart. Ambient & centered most of the time; during the Works descent it
- * zooms in (top first) and the "camera" pans down it as you scroll, rotating.
+ * The heart is a screw thread: a fixed-size object that rotates *as* it rises,
+ * so you read it top→bottom across the Works descent. Its rotation is locked to
+ * the panel ring (scrollState.worksRot) so the project panels stay pinned to it.
+ * No scale ramp, no pop — it simply screws upward, revealing itself.
  */
 export default function Heart({ url = asset('heart.glb') }) {
   const group = useRef()
   const { scene } = useGLTF(url)
-  const cur = useRef({ scale: 2.4, y: 0, rot: 0 })
+  const cur = useRef({ y: TOP_Y, rot: 0 })
 
   useFrame((state) => {
     if (!group.current) return
     const t = state.clock.elapsedTime
-    const wa = scrollState.worksActive
     const wp = scrollState.worksProgress
     const reveal = scrollState.heartReveal
+    const slide = scrollState.heartY // slides in from below / out the top
 
-    // hidden until it pops in
-    group.current.visible = reveal > 0.005
-    const pop = Math.max(0, easeOutBack(Math.min(reveal, 1))) // 0 → overshoot → 1
+    group.current.visible = reveal > 0.01
 
-    // targets
-    const tScale = wa ? 3.8 : 2.4 * pop
-    const tY = wa ? lerp(-2.8, 2.4, wp) : 0
-    const tRot = wa ? wp * Math.PI * 2.2 : scrollState.progress * Math.PI * 5
+    const tY = lerp(TOP_Y, BOTTOM_Y, wp) + slide
+    const tRot = -scrollState.worksRot * DEG // pinned to the panels
 
     const c = cur.current
-    c.scale = lerp(c.scale, tScale, wa ? 0.06 : 0.18)
-    c.y = lerp(c.y, tY, 0.08)
-    c.rot += (tRot - c.rot) * 0.08
+    c.y = lerp(c.y, tY, 0.12)
+    c.rot += (tRot - c.rot) * 0.1
 
-    group.current.rotation.y = c.rot
-    group.current.rotation.x = wa ? lerp(group.current.rotation.x, -0.05, 0.06) : 0.12
     group.current.position.y = c.y
-    group.current.scale.setScalar(c.scale * (1 + 0.04 * beat(t * (62 / 60))))
+    group.current.rotation.y = c.rot
+    group.current.rotation.x = -0.02
+    group.current.scale.setScalar(SCALE * (1 + 0.015 * beat(t * (62 / 60))))
   })
 
   return (

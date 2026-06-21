@@ -72,16 +72,21 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [reducedMotion])
 
-  // the heart stays hidden until ~one screen before Work, then pops in
+  // heart presence: slides up from below as Work approaches, out the top after
   useEffect(() => {
     let raf = 0
+    const cl = (v) => Math.max(0, Math.min(1, v))
     const compute = () => {
       raf = 0
       const work = document.getElementById('work')
       if (!work) return
-      const top = work.getBoundingClientRect().top
+      const r = work.getBoundingClientRect()
       const vh = window.innerHeight
-      scrollState.heartReveal = Math.max(0, Math.min(1, 1 - top / (vh * 0.7)))
+      // rise from below as Work approaches, exit up as it leaves — no pop
+      const enter = cl(1 - r.top / (vh * 0.6))
+      const exit = cl(1 - r.bottom / (vh * 0.6))
+      scrollState.heartReveal = enter * (1 - exit)
+      scrollState.heartY = (1 - enter) * -6 + exit * 6
     }
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(compute)

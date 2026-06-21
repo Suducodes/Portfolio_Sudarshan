@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { projects } from '../data/projects'
 import ProjectMotif from '../components/fx/ProjectMotif'
 import { Reveal, RevealLines } from '../components/anim/Reveal'
@@ -8,13 +8,14 @@ import { scrollState } from '../lib/scrollState'
 
 const N = projects.length
 const STEP = 360 / N
-const RADIUS = 430
-const Y_GAP = 300
+const RADIUS = 460
+const Y_GAP = 340
 const MAX_Y = (N - 1) * Y_GAP
+const CARD_W = 'clamp(280px, 25vw, 400px)'
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v))
 
 /* a transparent glass panel — the scene refracts through it, name sits on it */
-function Card({ p, big = true }) {
+function Card({ p, big = true, active = true }) {
   return (
     <>
       <figure
@@ -25,7 +26,7 @@ function Card({ p, big = true }) {
         }}
       >
         <div className="relative aspect-[4/3] w-full">
-          <ProjectMotif motif={p.motif} color={p.color} className="absolute inset-0 h-full w-full opacity-75" />
+          <ProjectMotif motif={p.motif} color={p.color} active={active} className="absolute inset-0 h-full w-full opacity-75" />
           {/* glass sheen */}
           <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(120deg, rgba(255,255,255,0.14), transparent 40%)' }} />
           <span className="absolute left-5 top-4 font-body text-[9px] uppercase tracking-[0.3em]" style={{ color: p.color }}>
@@ -53,12 +54,14 @@ export default function Works({ onOpen }) {
   const sectionRef = useRef(null)
   const ringRef = useRef(null)
   const slots = useRef([])
+  const [activeIdx, setActiveIdx] = useState(0)
 
   useEffect(() => {
     if (!desktop) return
     const section = sectionRef.current
     let cur = 0
     let raf
+    let focus = 0
     const loop = () => {
       raf = requestAnimationFrame(loop)
       const rect = section.getBoundingClientRect()
@@ -74,8 +77,14 @@ export default function Works({ onOpen }) {
       const current = cur * (N - 1) * STEP
       scrollState.worksActive = rect.top <= 2 && rect.bottom >= vh - 2
       scrollState.worksProgress = cur
+      scrollState.worksRot = current // heart locks to this — panels stay pinned
       if (ringRef.current)
         ringRef.current.style.transform = `translateY(${-cur * MAX_Y}px) rotateX(-6deg) rotateY(${-current}deg)`
+      const f0 = clamp(Math.round(current / STEP), 0, N - 1)
+      if (f0 !== focus) {
+        focus = f0
+        setActiveIdx(f0) // only the front card's motif animates
+      }
       slots.current.forEach((el, i) => {
         if (!el) return
         const a = (((i * STEP - current) % 360) + 540) % 360 - 180
@@ -123,24 +132,25 @@ export default function Works({ onOpen }) {
           </h2>
         </div>
 
-        <div style={{ perspective: '1700px' }} className="relative h-full w-full">
+        <div style={{ perspective: '1500px' }} className="relative h-full w-full">
           <div ref={ringRef} className="absolute left-1/2 top-1/2 will-change-transform" style={{ transformStyle: 'preserve-3d' }}>
             {projects.map((p, i) => (
               <div
                 key={p.id}
                 ref={(el) => (slots.current[i] = el)}
                 onClick={() => onOpen(i)}
-                className="group/card absolute w-[clamp(300px,25vw,400px)] cursor-pointer"
+                className="group/card absolute cursor-pointer"
                 style={{
+                  width: CARD_W,
                   left: '50%',
                   top: '50%',
-                  marginLeft: 'calc(clamp(300px,25vw,400px) / -2)',
-                  marginTop: '-150px',
+                  marginLeft: `calc(${CARD_W} / -2)`,
+                  marginTop: '-165px',
                   transform: `rotateY(${i * STEP}deg) translateZ(${RADIUS}px) translateY(${i * Y_GAP}px)`,
                   backfaceVisibility: 'hidden',
                 }}
               >
-                <Card p={p} />
+                <Card p={p} active={i === activeIdx} />
               </div>
             ))}
           </div>

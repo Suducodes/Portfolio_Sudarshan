@@ -43,7 +43,7 @@ export default function Hero({ ready }) {
           initial={{ opacity: 0, y: 30 }}
           animate={ready ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.5, duration: 1.4, ease }}
-          className="absolute bottom-0 right-0 z-[10] h-[56%] max-w-none object-contain object-bottom sm:h-[94%]"
+          className="absolute bottom-0 right-[4%] z-[10] h-[56%] max-w-none object-contain object-bottom sm:h-[94%]"
           style={{ filter: 'drop-shadow(0 30px 70px rgba(0,0,0,0.7))' }}
         />
         {/* soft glow behind the figure */}

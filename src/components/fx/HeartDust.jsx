@@ -47,6 +47,7 @@ export default function HeartDust({ count = 190 }) {
     const t = state.clock.elapsedTime
     if (ref.current) {
       ref.current.rotation.y = t * 0.04 + scrollState.worksProgress * 1.5
+      ref.current.position.y = scrollState.heartY * 0.8 // rise/exit with the heart
       ref.current.visible = scrollState.heartReveal > 0.01
     }
     if (matRef.current) {

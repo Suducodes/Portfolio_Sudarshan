@@ -5,8 +5,12 @@ import { useEffect, useRef } from 'react'
  * tuned to the project's domain: an ECG trace, layered biomechanics waves, a
  * molecular hex lattice, and a clinical scatter with a sweeping boundary.
  */
-export default function ProjectMotif({ motif, color = '#00E5C4', className = '' }) {
+export default function ProjectMotif({ motif, color = '#00E5C4', active = true, className = '' }) {
   const canvasRef = useRef(null)
+  const activeRef = useRef(active)
+  useEffect(() => {
+    activeRef.current = active
+  }, [active])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -44,10 +48,14 @@ export default function ProjectMotif({ motif, color = '#00E5C4', className = '' 
     io.observe(canvas)
 
     let last = -100
+    let painted = false
     const draw = (time) => {
       if (!reduced && visible) raf = requestAnimationFrame(draw)
-      if (time - last < 33) return // cap motifs at ~30fps — plenty for ambient art
+      // only the focused card animates; others paint one frame then idle (~free)
+      if (!activeRef.current && painted) return
+      if (activeRef.current && time - last < 33) return // cap at ~30fps
       last = time
+      painted = true
       const t = time * 0.001
       ctx.clearRect(0, 0, w, h)
       ctx.lineCap = 'round'
