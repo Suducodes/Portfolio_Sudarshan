@@ -13,18 +13,18 @@ export default function Loader({ onDone }) {
       path.style.strokeDasharray = `${len}`
       path.style.strokeDashoffset = `${len}`
       path.getBoundingClientRect()
-      path.style.transition = 'stroke-dashoffset 1.9s cubic-bezier(0.7,0,0.3,1)'
+      path.style.transition = 'stroke-dashoffset 1.05s cubic-bezier(0.7,0,0.3,1)'
       path.style.strokeDashoffset = '0'
     }
     const start = performance.now()
-    const DUR = 2000
+    const DUR = 1100
     let raf
     const tick = (now) => {
       const p = Math.min(1, (now - start) / DUR)
       const eased = 1 - Math.pow(1 - p, 3)
       setCount(Math.round(eased * 100))
       if (p < 1) raf = requestAnimationFrame(tick)
-      else setTimeout(() => setDone(true), 250)
+      else setTimeout(() => setDone(true), 120)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)

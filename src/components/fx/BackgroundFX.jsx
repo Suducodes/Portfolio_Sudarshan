@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
+import { KernelSize } from 'postprocessing'
 import NeuralNet from './NeuralNet'
 import Heart from './Heart'
 import SafeModel from './SafeModel'
@@ -28,7 +29,7 @@ export default function BackgroundFX() {
         </Suspense>
       </SafeModel>
       <EffectComposer disableNormalPass multisampling={0}>
-        <Bloom luminanceThreshold={0.62} intensity={0.38} radius={0.5} mipmapBlur />
+        <Bloom luminanceThreshold={0.62} intensity={0.34} kernelSize={KernelSize.SMALL} mipmapBlur />
       </EffectComposer>
     </Canvas>
   )

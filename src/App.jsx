@@ -37,6 +37,16 @@ export default function App() {
     sfx.setEnabled(soundOn)
   }, [soundOn])
 
+  // warm the heavy WebGL chunk while the loader plays, so it mounts instantly
+  // once `ready` flips — without competing for the hero's first paint
+  useEffect(() => {
+    if (reducedMotion) return
+    const warm = () => import('./components/fx/BackgroundFX')
+    const ric = window.requestIdleCallback
+    const id = ric ? ric(warm) : setTimeout(warm, 800)
+    return () => (ric ? window.cancelIdleCallback?.(id) : clearTimeout(id))
+  }, [reducedMotion])
+
   const openProject = useCallback((i) => {
     setOpenIdx(i)
     sfx.whoosh()
@@ -125,9 +135,13 @@ export default function App() {
               'radial-gradient(70% 55% at 72% 38%, rgba(0,229,196,0.10), transparent 60%), radial-gradient(50% 50% at 25% 80%, rgba(139,123,216,0.07), transparent 70%)',
           }}
         >
-          <Suspense fallback={<div className="h-full w-full bg-void" />}>
-            <BackgroundFX />
-          </Suspense>
+          {/* mount the heavy WebGL scene only after the loader — keeps three.js
+              init + shader compile off the hero's paint/interaction path */}
+          {ready && (
+            <Suspense fallback={<div className="h-full w-full bg-void" />}>
+              <BackgroundFX />
+            </Suspense>
+          )}
         </div>
       ) : (
         <div className="fixed inset-0 z-0 bg-void">
