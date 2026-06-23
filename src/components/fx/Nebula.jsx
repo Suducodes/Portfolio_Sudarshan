@@ -38,7 +38,7 @@ const frag = /* glsl */ `
   }
   float fbm(vec2 p){
     float v = 0.0, a = 0.5;
-    for (int i = 0; i < 3; i++) { v += a * noise(p); p *= 2.03; a *= 0.5; }
+    for (int i = 0; i < 2; i++) { v += a * noise(p); p *= 2.03; a *= 0.5; }
     return v;
   }
 
@@ -48,19 +48,17 @@ const frag = /* glsl */ `
     uv *= 2.4;
     float t = uTime * 0.045;
 
-    // iq-style domain warp — two levels of fbm feeding the next
+    // single-level domain warp — cheap, still reads as flowing nebula
     vec2 q = vec2(fbm(uv + vec2(0.0, t)), fbm(uv + vec2(5.2, 1.3 - t)));
-    vec2 r = vec2(fbm(uv + 3.0 * q + vec2(1.7, 9.2) + 0.12 * t),
-                  fbm(uv + 3.0 * q + vec2(8.3, 2.8) - 0.10 * t));
-    float f = fbm(uv + 3.4 * r);
+    float f = fbm(uv + 2.6 * q);
 
     // palette drifts with scroll
     vec3 hot = mix(uTeal, uViolet, smoothstep(0.0, 0.55, uScroll));
     hot = mix(hot, uCrimson, smoothstep(0.55, 1.0, uScroll));
 
     vec3 col = uVoid;
-    col = mix(col, hot * 0.45, clamp(f * f * 1.7, 0.0, 1.0));
-    col = mix(col, hot, clamp(dot(r, r) * 0.42, 0.0, 1.0));
+    col = mix(col, hot * 0.5, clamp(f * f * 1.9, 0.0, 1.0));
+    col = mix(col, hot, clamp(dot(q, q) * 0.5, 0.0, 1.0));
     col += hot * 0.10 * pow(clamp(q.x * q.y, 0.0, 1.0), 1.5); // faint filaments
 
     // settle toward void at the edges so UI text always reads
@@ -72,6 +70,7 @@ const frag = /* glsl */ `
 `
 
 export default function Nebula() {
+  const mesh = useRef()
   const mat = useRef()
   const { size } = useThree()
   const uniforms = useMemo(
@@ -88,15 +87,19 @@ export default function Nebula() {
   )
 
   useFrame((state) => {
+    // while the heart dominates the screen the nebula is occluded behind it —
+    // stop drawing the fullscreen fbm entirely (the single biggest per-pixel
+    // cost during the Works descent), leaving a clean void around the heart.
+    if (mesh.current) mesh.current.visible = scrollState.heartReveal < 0.5
     const u = mat.current?.uniforms
-    if (!u) return
+    if (!u || !mesh.current?.visible) return
     u.uTime.value = state.clock.elapsedTime
     u.uScroll.value += (scrollState.progress - u.uScroll.value) * 0.05
     u.uAspect.value = size.width / size.height
   })
 
   return (
-    <mesh renderOrder={-10} frustumCulled={false}>
+    <mesh ref={mesh} renderOrder={-10} frustumCulled={false}>
       <planeGeometry args={[2, 2]} />
       <shaderMaterial ref={mat} uniforms={uniforms} vertexShader={vert} fragmentShader={frag} depthTest={false} depthWrite={false} />
     </mesh>

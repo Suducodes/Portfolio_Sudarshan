@@ -22,7 +22,7 @@ function Card({ p, big = true, active = true }) {
         className="group relative overflow-hidden rounded-2xl border border-white/20"
         style={{
           background: 'linear-gradient(150deg, rgba(255,255,255,0.10), rgba(255,255,255,0.015) 60%)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 0 40px rgba(255,255,255,0.04), 0 50px 110px -40px rgba(0,0,0,0.8)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 0 40px rgba(255,255,255,0.04), 0 24px 50px -28px rgba(0,0,0,0.8)',
         }}
       >
         <div className="relative aspect-[4/3] w-full">
@@ -60,8 +60,10 @@ export default function Works({ onOpen }) {
     if (!desktop) return
     const section = sectionRef.current
     let cur = 0
+    let drawn = -1 // last rotation we actually painted — lets us skip when settled
     let raf
     let focus = 0
+    const last = [] // cached per-slot styles, so we only touch the DOM on change
     const loop = () => {
       raf = requestAnimationFrame(loop)
       const rect = section.getBoundingClientRect()
@@ -78,6 +80,9 @@ export default function Works({ onOpen }) {
       scrollState.worksActive = rect.top <= 2 && rect.bottom >= vh - 2
       scrollState.worksProgress = cur
       scrollState.worksRot = current // heart locks to this — panels stay pinned
+      // nothing moved enough to matter — skip all DOM writes this frame
+      if (Math.abs(current - drawn) < 0.02) return
+      drawn = current
       if (ringRef.current)
         ringRef.current.style.transform = `translateY(${-cur * MAX_Y}px) rotateX(-6deg) rotateY(${-current}deg)`
       const f0 = clamp(Math.round(current / STEP), 0, N - 1)
@@ -89,9 +94,13 @@ export default function Works({ onOpen }) {
         if (!el) return
         const a = (((i * STEP - current) % 360) + 540) % 360 - 180
         const f = clamp(1 - Math.abs(a) / 115, 0, 1)
-        el.style.opacity = (0.05 + 0.95 * f).toFixed(3)
-        el.style.zIndex = String(Math.round(f * 100))
-        el.style.pointerEvents = f > 0.6 ? 'auto' : 'none'
+        const o = (0.05 + 0.95 * f).toFixed(2)
+        const z = Math.round(f * 100)
+        const pe = f > 0.6 ? 'auto' : 'none'
+        const L = last[i] || (last[i] = {})
+        if (L.o !== o) el.style.opacity = (L.o = o)
+        if (L.z !== z) el.style.zIndex = String((L.z = z))
+        if (L.pe !== pe) el.style.pointerEvents = (L.pe = pe)
       })
     }
     raf = requestAnimationFrame(loop)
