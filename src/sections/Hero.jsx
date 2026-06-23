@@ -58,7 +58,7 @@ export default function Hero({ ready }) {
         <div className="absolute inset-0 bg-gradient-to-r from-void/90 via-void/25 to-transparent" />
 
         {/* name — left, artistic */}
-        <div className="absolute inset-y-0 left-6 z-[20] flex max-w-[60%] flex-col justify-center sm:left-12 md:max-w-[52%]">
+        <div className="absolute inset-y-0 left-6 z-[20] flex max-w-[62%] flex-col justify-center sm:left-[14%] md:max-w-[50%] lg:left-[22%]">
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={ready ? { opacity: 1, x: 0 } : {}}

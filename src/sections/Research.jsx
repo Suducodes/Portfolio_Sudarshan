@@ -80,19 +80,24 @@ export default function Research() {
           <span className="inline-block h-px w-12 bg-teal/50" />
           Publications & Conferences
         </Reveal>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-3">
           {publications.map((p) => (
-            <Reveal
-              key={p.n}
-              className="group grid grid-cols-[auto_1fr] gap-5 border-t border-bone/10 py-6 last:border-b sm:gap-8"
-            >
-              <span className="font-display text-sm tracking-[0.2em] text-teal/60">[{p.n}]</span>
-              <div>
-                <p className="font-body text-[15px] leading-relaxed text-bone/85">{p.cite}</p>
-                <p className="mt-1.5 font-body text-[12px] uppercase tracking-[0.12em] text-teal/70">
-                  {p.venue}
-                </p>
-              </div>
+            <Reveal key={p.n}>
+              <article className="group relative grid grid-cols-[auto_1fr] items-start gap-5 overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] px-5 py-5 transition-[background-color,border-color] duration-500 hover:border-teal/30 hover:bg-white/[0.045] sm:gap-7 sm:px-7">
+                {/* accent bar lights on hover */}
+                <span className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-teal/60 transition-transform duration-500 group-hover:scale-y-100" />
+                {/* ghost index — depth */}
+                <span className="pointer-events-none absolute -right-2 -top-5 font-display text-7xl font-700 leading-none text-white/[0.03] transition-colors duration-500 group-hover:text-teal/[0.07]">
+                  {p.n}
+                </span>
+                <span className="mt-1 font-display text-sm tracking-[0.25em] text-teal/55">{p.n}</span>
+                <div className="relative">
+                  <p className="font-body text-[15px] leading-relaxed text-bone/85">{p.cite}</p>
+                  <span className="mt-3 inline-block rounded-full border border-teal/20 bg-teal/[0.06] px-3 py-1 font-body text-[11px] uppercase tracking-[0.14em] text-teal/80">
+                    {p.venue}
+                  </span>
+                </div>
+              </article>
             </Reveal>
           ))}
         </div>

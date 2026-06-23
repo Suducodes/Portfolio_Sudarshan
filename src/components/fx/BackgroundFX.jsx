@@ -1,36 +1,47 @@
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { KernelSize } from 'postprocessing'
-import NeuralNet from './NeuralNet'
+import { PerformanceMonitor } from '@react-three/drei'
+import Nebula from './Nebula'
 import Heart from './Heart'
 import SafeModel from './SafeModel'
 
 export default function BackgroundFX() {
+  // adapt render resolution to the machine — keeps the heart section smooth on
+  // big displays without hard-coding a guess. Floor 0.6 so it never gets mushy.
+  const [dpr, setDpr] = useState(1)
+
   return (
     <Canvas
-      dpr={1}
+      dpr={dpr}
       gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
       camera={{ position: [0, 0, 6.6], fov: 55 }}
       style={{ position: 'fixed', inset: 0, pointerEvents: 'none' }}
     >
-      <fog attach="fog" args={['#070a0d', 6, 18]} />
-      {/* cinematic key + teal rim + crimson core light */}
-      <ambientLight intensity={0.45} />
-      <directionalLight position={[4, 5, 4]} intensity={2.0} color="#fff1e6" />
-      <directionalLight position={[-5, 1, -3]} intensity={2.4} color="#00E5C4" />
-      <pointLight position={[0, -1.2, 2.5]} intensity={7} distance={9} color="#C1121F" />
-      {/* faint ambient depth */}
-      <NeuralNet count={28} />
-      {/* the centerpiece — a real beating heart, screwing up through the works */}
-      <SafeModel>
-        <Suspense fallback={null}>
-          <Heart />
-        </Suspense>
-      </SafeModel>
-      <EffectComposer disableNormalPass multisampling={0}>
-        <Bloom luminanceThreshold={0.62} intensity={0.34} kernelSize={KernelSize.SMALL} mipmapBlur />
-      </EffectComposer>
+      <PerformanceMonitor
+        flipflops={3}
+        onChange={({ factor }) => setDpr(0.6 + 0.4 * factor)}
+        onFallback={() => setDpr(0.6)}
+      >
+        <fog attach="fog" args={['#070a0d', 6, 18]} />
+        {/* cinematic key + teal rim + crimson core light */}
+        <ambientLight intensity={0.45} />
+        <directionalLight position={[4, 5, 4]} intensity={2.0} color="#fff1e6" />
+        <directionalLight position={[-5, 1, -3]} intensity={2.4} color="#00E5C4" />
+        <pointLight position={[0, -1.2, 2.5]} intensity={7} distance={9} color="#C1121F" />
+        {/* procedural atmosphere — replaces the old neural-net dots */}
+        <Nebula />
+        {/* the centerpiece — a real beating heart, screwing up through the works */}
+        <SafeModel>
+          <Suspense fallback={null}>
+            <Heart />
+          </Suspense>
+        </SafeModel>
+        <EffectComposer disableNormalPass multisampling={0}>
+          <Bloom luminanceThreshold={0.62} intensity={0.34} kernelSize={KernelSize.SMALL} mipmapBlur />
+        </EffectComposer>
+      </PerformanceMonitor>
     </Canvas>
   )
 }

@@ -8,7 +8,6 @@ import ProjectDetail from './components/ProjectDetail'
 import { projects } from './data/projects'
 
 import Hero from './sections/Hero'
-import Manifesto from './sections/Manifesto'
 import Tagline from './sections/Tagline'
 import Works from './sections/Works'
 import Research from './sections/Research'
@@ -164,7 +163,6 @@ export default function App() {
 
       <main className="relative z-10">
         <Hero ready={ready} />
-        <Manifesto />
         <Tagline />
         <Works onOpen={openProject} />
         <Research />
