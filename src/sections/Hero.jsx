@@ -73,17 +73,12 @@ export default function Hero({ ready, scrollTo }) {
             initial={{ opacity: 0, x: -10 }}
             animate={ready ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.15, duration: 1 }}
-            className="mb-7"
+            className="mb-6 flex items-center gap-4"
           >
-            <Glass className="inline-flex items-center gap-2.5 rounded-full px-4 py-2">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-teal animate-pulse-dot" />
-                <span className="inline-flex h-1.5 w-1.5 rounded-full bg-teal" />
-              </span>
-              <span className="font-body text-[10px] uppercase tracking-[0.4em] text-bone/90 sm:text-[11px]">
-                Coimbatore → Toronto · 2026
-              </span>
-            </Glass>
+            <span className="h-px w-14 bg-teal/60" />
+            <span className="font-body text-[10px] uppercase tracking-[0.45em] text-teal sm:text-[11px]">
+              Coimbatore → Toronto · 2026
+            </span>
           </motion.div>
 
           <h1 className="font-serif uppercase leading-[0.82] tracking-tight text-bone">

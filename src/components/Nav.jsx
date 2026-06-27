@@ -1,6 +1,14 @@
-import { useEffect, useState } from 'react'
-import { Magnetic } from '../hooks/useMagnetic'
+import { useEffect, useRef, useState } from 'react'
 import { sfx } from '../lib/sfx'
+
+// the glass capsule that holds the nav links — an iOS segmented-control look
+const CAPSULE = {
+  background: 'linear-gradient(150deg, rgba(255,255,255,0.11), rgba(255,255,255,0.025))',
+  backdropFilter: 'blur(16px) saturate(150%)',
+  WebkitBackdropFilter: 'blur(16px) saturate(150%)',
+  border: '1px solid rgba(255,255,255,0.16)',
+  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(255,255,255,0.05), 0 10px 30px -14px rgba(0,0,0,0.6)',
+}
 
 const ITEMS = [
   { label: 'Work', target: '#work' },
@@ -41,6 +49,13 @@ function SoundToggle({ on, onToggle }) {
 export default function Nav({ scrollTo, soundOn, onToggleSound }) {
   const [hidden, setHidden] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [thumb, setThumb] = useState(null) // sliding glass highlight {left,width}
+  const itemRefs = useRef([])
+
+  const moveThumb = (i) => {
+    const el = itemRefs.current[i]
+    if (el) setThumb({ left: el.offsetLeft, width: el.offsetWidth })
+  }
 
   useEffect(() => {
     let last = window.scrollY
@@ -83,25 +98,41 @@ export default function Nav({ scrollTo, soundOn, onToggleSound }) {
           </span>
         </button>
 
-        <nav className="flex items-center gap-5 sm:gap-7">
-          <ul className="flex items-center gap-4 sm:gap-7">
-            {ITEMS.map((item) => (
+        <nav className="flex items-center gap-3 sm:gap-5">
+          <ul
+            onMouseLeave={() => setThumb(null)}
+            className="relative flex items-center rounded-full p-1 sm:p-1.5"
+            style={CAPSULE}
+          >
+            {/* sliding liquid-glass thumb — follows the hovered item */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute bottom-1 top-1 rounded-full transition-all duration-300 ease-surgical sm:bottom-1.5 sm:top-1.5"
+              style={{
+                left: thumb ? thumb.left : 0,
+                width: thumb ? thumb.width : 0,
+                opacity: thumb ? 1 : 0,
+                background: 'linear-gradient(150deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06))',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 8px -2px rgba(0,0,0,0.4)',
+              }}
+            />
+            {ITEMS.map((item, i) => (
               <li key={item.label}>
-                <Magnetic strength={0.4}>
-                  <button
-                    onClick={() => scrollTo(item.target)}
-                    onMouseEnter={() => sfx.tick()}
-                    data-cursor="hover"
-                    className="group relative font-body text-[12px] uppercase tracking-[0.2em] text-bone/60 transition-colors hover:text-bone"
-                  >
-                    {item.label}
-                    <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-teal transition-all duration-300 ease-surgical group-hover:w-full" />
-                  </button>
-                </Magnetic>
+                <button
+                  ref={(el) => (itemRefs.current[i] = el)}
+                  onClick={() => scrollTo(item.target)}
+                  onMouseEnter={() => {
+                    moveThumb(i)
+                    sfx.tick()
+                  }}
+                  data-cursor="hover"
+                  className="relative z-10 rounded-full px-3 py-1.5 font-body text-[11px] uppercase tracking-[0.18em] text-bone/65 transition-colors duration-300 hover:text-bone sm:px-4 sm:text-[12px]"
+                >
+                  {item.label}
+                </button>
               </li>
             ))}
           </ul>
-          <span className="hidden h-4 w-px bg-bone/15 sm:block" />
           <SoundToggle on={soundOn} onToggle={onToggleSound} />
         </nav>
       </div>

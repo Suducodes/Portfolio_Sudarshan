@@ -27,6 +27,7 @@ const frag = /* glsl */ `
   uniform vec3 uTeal;
   uniform vec3 uViolet;
   uniform vec3 uCrimson;
+  uniform float uFade;
 
   float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
   float noise(vec2 p){
@@ -65,7 +66,7 @@ const frag = /* glsl */ `
     float vig = smoothstep(1.3, 0.18, length(vUv - 0.5));
     col *= 0.30 + 0.62 * vig;
 
-    gl_FragColor = vec4(col * 0.85, 1.0); // keep it atmospheric, never loud
+    gl_FragColor = vec4(col * 0.85, uFade); // keep it atmospheric, never loud
   }
 `
 
@@ -82,17 +83,27 @@ export default function Nebula() {
       uTeal: { value: new THREE.Color('#00E5C4') },
       uViolet: { value: new THREE.Color('#8b7bd8') },
       uCrimson: { value: new THREE.Color('#C1121F') },
+      uFade: { value: 1 },
     }),
     []
   )
 
+  const smoothstep = (a, b, x) => {
+    const t = Math.max(0, Math.min(1, (x - a) / (b - a)))
+    return t * t * (3 - 2 * t)
+  }
+
   useFrame((state) => {
-    // while the heart dominates the screen the nebula is occluded behind it —
-    // stop drawing the fullscreen fbm entirely (the single biggest per-pixel
-    // cost during the Works descent), leaving a clean void around the heart.
-    if (mesh.current) mesh.current.visible = scrollState.heartReveal < 0.5
     const u = mat.current?.uniforms
-    if (!u || !mesh.current?.visible) return
+    if (!u || !mesh.current) return
+    // Ooze out as the heart rises and back in as it leaves — never an on/off
+    // snap. Once fully faded we stop drawing the fullscreen fbm entirely, so the
+    // heaviest middle of the heart descent stays cheap.
+    const target = 1 - smoothstep(0.18, 0.6, scrollState.heartReveal)
+    u.uFade.value += (target - u.uFade.value) * 0.07
+    const vis = u.uFade.value > 0.012
+    mesh.current.visible = vis
+    if (!vis) return
     u.uTime.value = state.clock.elapsedTime
     u.uScroll.value += (scrollState.progress - u.uScroll.value) * 0.05
     u.uAspect.value = size.width / size.height
@@ -101,7 +112,15 @@ export default function Nebula() {
   return (
     <mesh ref={mesh} renderOrder={-10} frustumCulled={false}>
       <planeGeometry args={[2, 2]} />
-      <shaderMaterial ref={mat} uniforms={uniforms} vertexShader={vert} fragmentShader={frag} depthTest={false} depthWrite={false} />
+      <shaderMaterial
+        ref={mat}
+        uniforms={uniforms}
+        vertexShader={vert}
+        fragmentShader={frag}
+        transparent
+        depthTest={false}
+        depthWrite={false}
+      />
     </mesh>
   )
 }
