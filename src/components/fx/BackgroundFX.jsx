@@ -8,18 +8,20 @@ import SafeModel from './SafeModel'
 import { scrollState } from '../../lib/scrollState'
 
 /**
- * Renders the whole scene at full resolution normally, but drops the device
- * pixel ratio while the heart section is on screen — that's when the cost is
- * highest (big heart + Bloom + the CSS-3D orbit on top) and fragment count is
- * what kills FPS on large displays. Halving dpr ≈ a quarter of the fragments.
- * Only switches on section enter/exit, never per frame.
+ * Caps the WebGL backing-buffer *width* so render cost stops scaling with the
+ * display — a 4K screen renders the heart at the same fragment count as 1080p.
+ * The cap tightens while the heart section is on screen (big heart + Bloom +
+ * the CSS-3D orbit composite together there). Switches only when the cap or the
+ * section state changes, never per frame.
  */
-function AdaptiveResolution({ base = 1, low = 0.62 }) {
+function AdaptiveResolution({ capIdle = 1600, capHeart = 1200 }) {
   const gl = useThree((s) => s.gl)
+  const width = useThree((s) => s.size.width)
   const cur = useRef(-1)
   useFrame(() => {
-    const want = scrollState.heartReveal > 0.08 ? low : base
-    if (cur.current !== want) {
+    const cap = scrollState.heartReveal > 0.08 ? capHeart : capIdle
+    const want = Math.min(1, cap / width)
+    if (Math.abs(cur.current - want) > 0.01) {
       cur.current = want
       gl.setPixelRatio(want)
     }
