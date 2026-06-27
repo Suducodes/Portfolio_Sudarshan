@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { gsap } from '../lib/scroll'
 import { asset } from '../lib/asset'
 import RotatingHook from '../components/RotatingHook'
+import Glass from '../components/Glass'
 
 const ease = [0.16, 1, 0.3, 1]
 const up = {
@@ -15,7 +16,7 @@ const up = {
   }),
 }
 
-export default function Hero({ ready }) {
+export default function Hero({ ready, scrollTo }) {
   const wrap = useRef(null)
   const inner = useRef(null)
 
@@ -34,7 +35,16 @@ export default function Hero({ ready }) {
 
   return (
     <section ref={wrap} className="relative h-[100svh] w-full overflow-hidden">
-      <div ref={inner} className="absolute inset-0">
+      <div
+        ref={inner}
+        className="absolute inset-0"
+        style={{
+          // feather the hero's bottom so its scrims + figure dissolve into the
+          // nebula instead of ending on a hard line where the next section starts
+          WebkitMaskImage: 'linear-gradient(to bottom, #000 84%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, #000 84%, transparent 100%)',
+        }}
+      >
         {/* figure — right, fully visible */}
         <motion.img
           src={asset('sudu.png')}
@@ -63,12 +73,17 @@ export default function Hero({ ready }) {
             initial={{ opacity: 0, x: -10 }}
             animate={ready ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.15, duration: 1 }}
-            className="mb-6 flex items-center gap-4"
+            className="mb-7"
           >
-            <span className="h-px w-14 bg-teal/60" />
-            <span className="font-body text-[10px] uppercase tracking-[0.45em] text-teal sm:text-[11px]">
-              Coimbatore → Toronto · 2026
-            </span>
+            <Glass className="inline-flex items-center gap-2.5 rounded-full px-4 py-2">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-teal animate-pulse-dot" />
+                <span className="inline-flex h-1.5 w-1.5 rounded-full bg-teal" />
+              </span>
+              <span className="font-body text-[10px] uppercase tracking-[0.4em] text-bone/90 sm:text-[11px]">
+                Coimbatore → Toronto · 2026
+              </span>
+            </Glass>
           </motion.div>
 
           <h1 className="font-serif uppercase leading-[0.82] tracking-tight text-bone">
@@ -113,6 +128,27 @@ export default function Hero({ ready }) {
             style={{ textShadow: '0 2px 20px rgba(0,0,0,0.95)' }}
           >
             <RotatingHook />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={ready ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 1.35, duration: 0.9, ease }}
+            className="mt-9 flex flex-wrap items-center gap-3"
+          >
+            <Glass
+              as="button"
+              onClick={() => scrollTo?.('#work')}
+              className="rounded-full px-6 py-3 text-bone transition-transform duration-300 hover:-translate-y-0.5"
+            >
+              <span className="font-body text-[12px] uppercase tracking-[0.22em]">View work →</span>
+            </Glass>
+            <button
+              onClick={() => scrollTo?.('#contact')}
+              className="rounded-full px-6 py-3 font-body text-[12px] uppercase tracking-[0.22em] text-bone/55 transition-colors duration-300 hover:text-teal"
+            >
+              Get in touch
+            </button>
           </motion.div>
         </div>
       </div>

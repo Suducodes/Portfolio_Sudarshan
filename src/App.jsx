@@ -162,7 +162,7 @@ export default function App() {
       <VitalHud beating={soundOn} />
 
       <main className="relative z-10">
-        <Hero ready={ready} />
+        <Hero ready={ready} scrollTo={scrollTo} />
         <Tagline />
         <Works onOpen={openProject} />
         <Research />

@@ -113,7 +113,13 @@ export default function Works({ onOpen }) {
   if (!desktop) {
     return (
       <section id="work" className="relative w-full px-6 py-28">
-        <div className="pointer-events-none absolute inset-0 bg-void/55" />
+        <div
+          className="pointer-events-none absolute inset-0 bg-void/55"
+          style={{
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent)',
+            maskImage: 'linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent)',
+          }}
+        />
         <div className="relative z-10 mx-auto flex max-w-xl flex-col items-center gap-20">
           <RevealLines
             as="h2"
@@ -132,7 +138,13 @@ export default function Works({ onOpen }) {
 
   return (
     <section id="work" ref={sectionRef} className="relative" style={{ height: `${(N - 1) * 82 + 120}vh` }}>
-      <div className="pointer-events-none absolute inset-0 bg-void/35" />
+      <div
+        className="pointer-events-none absolute inset-0 bg-void/35"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent)',
+          maskImage: 'linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent)',
+        }}
+      />
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
         <div className="pointer-events-none absolute left-1/2 top-[9%] z-[200] -translate-x-1/2 text-center">
           <p className="mb-3 font-body text-[11px] uppercase tracking-[0.45em] text-teal/70">Selected Work — descend the helix</p>

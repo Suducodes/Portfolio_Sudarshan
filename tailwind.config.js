@@ -53,12 +53,17 @@ export default {
           from: { transform: 'translateX(0)' },
           to: { transform: 'translateX(-50%)' },
         },
+        sheen: {
+          '0%': { backgroundPosition: '180% 0' },
+          '60%, 100%': { backgroundPosition: '-80% 0' },
+        },
       },
       animation: {
         'pulse-dot': 'pulse_dot 1.4s ease-in-out infinite',
         drift: 'drift 4s ease-in-out infinite',
         'spin-slow': 'spin_slow 32s linear infinite',
         marquee: 'marquee 28s linear infinite',
+        sheen: 'sheen 7s ease-in-out infinite',
       },
     },
   },
