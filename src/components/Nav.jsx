@@ -75,7 +75,7 @@ export default function Nav({ scrollTo, soundOn, onToggleSound }) {
       style={{ transform: hidden ? 'translateY(-110%)' : 'translateY(0)' }}
     >
       <div
-        className="flex items-center justify-between px-5 py-5 transition-colors duration-500 sm:px-9 sm:py-6"
+        className="relative flex items-center justify-between px-5 py-5 transition-colors duration-500 sm:px-9 sm:py-6"
         style={{
           backdropFilter: scrolled ? 'blur(10px)' : 'none',
           background: scrolled
@@ -98,12 +98,12 @@ export default function Nav({ scrollTo, soundOn, onToggleSound }) {
           </span>
         </button>
 
-        <nav className="flex items-center gap-3 sm:gap-5">
-          <ul
-            onMouseLeave={() => setThumb(null)}
-            className="relative flex items-center rounded-full p-1 sm:p-1.5"
-            style={CAPSULE}
-          >
+        {/* glass nav capsule — parked on the left, right above the hero kicker */}
+        <ul
+          onMouseLeave={() => setThumb(null)}
+          className="absolute left-6 top-1/2 flex -translate-y-1/2 items-center rounded-full p-1 sm:left-[14%] sm:p-1.5 lg:left-[22%]"
+          style={CAPSULE}
+        >
             {/* sliding liquid-glass thumb — follows the hovered item */}
             <span
               aria-hidden
@@ -132,9 +132,9 @@ export default function Nav({ scrollTo, soundOn, onToggleSound }) {
                 </button>
               </li>
             ))}
-          </ul>
-          <SoundToggle on={soundOn} onToggle={onToggleSound} />
-        </nav>
+        </ul>
+
+        <SoundToggle on={soundOn} onToggle={onToggleSound} />
       </div>
     </header>
   )
