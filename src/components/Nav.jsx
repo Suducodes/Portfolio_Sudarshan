@@ -75,7 +75,7 @@ export default function Nav({ scrollTo, soundOn, onToggleSound }) {
       style={{ transform: hidden ? 'translateY(-110%)' : 'translateY(0)' }}
     >
       <div
-        className="relative flex items-center justify-between px-5 py-5 transition-colors duration-500 sm:px-9 sm:py-6"
+        className="relative flex items-center justify-between px-5 py-8 transition-colors duration-500 sm:px-9 sm:py-11"
         style={{
           backdropFilter: scrolled ? 'blur(10px)' : 'none',
           background: scrolled
