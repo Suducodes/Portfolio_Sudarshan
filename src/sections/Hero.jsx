@@ -4,6 +4,7 @@ import { gsap } from '../lib/scroll'
 import { asset } from '../lib/asset'
 import RotatingHook from '../components/RotatingHook'
 import Glass from '../components/Glass'
+import NavCapsule from '../components/NavCapsule'
 
 const ease = [0.16, 1, 0.3, 1]
 const up = {
@@ -69,6 +70,16 @@ export default function Hero({ ready, scrollTo }) {
 
         {/* name — left, artistic */}
         <div className="absolute inset-y-0 left-6 z-[20] flex max-w-[62%] flex-col justify-center sm:left-[14%] md:max-w-[50%] lg:left-[22%]">
+          {/* glass nav capsule — anchored to the column, comfortably above the kicker */}
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={ready ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.1, duration: 1, ease }}
+            className="mb-10"
+          >
+            <NavCapsule scrollTo={scrollTo} />
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={ready ? { opacity: 1, x: 0 } : {}}

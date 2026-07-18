@@ -1,21 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { sfx } from '../lib/sfx'
-
-// the glass capsule that holds the nav links — an iOS segmented-control look
-const CAPSULE = {
-  background: 'linear-gradient(150deg, rgba(255,255,255,0.11), rgba(255,255,255,0.025))',
-  backdropFilter: 'blur(16px) saturate(150%)',
-  WebkitBackdropFilter: 'blur(16px) saturate(150%)',
-  border: '1px solid rgba(255,255,255,0.16)',
-  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(255,255,255,0.05), 0 10px 30px -14px rgba(0,0,0,0.6)',
-}
-
-const ITEMS = [
-  { label: 'Work', target: '#work' },
-  { label: 'Research', target: '#research' },
-  { label: 'Story', target: '#story' },
-  { label: 'Contact', target: '#contact' },
-]
+import { useEffect, useState } from 'react'
+import NavCapsule from './NavCapsule'
 
 function SoundToggle({ on, onToggle }) {
   return (
@@ -49,22 +33,17 @@ function SoundToggle({ on, onToggle }) {
 export default function Nav({ scrollTo, soundOn, onToggleSound }) {
   const [hidden, setHidden] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [thumb, setThumb] = useState(null) // sliding glass highlight {left,width}
-  const itemRefs = useRef([])
-
-  const moveThumb = (i) => {
-    const el = itemRefs.current[i]
-    if (el) setThumb({ left: el.offsetLeft, width: el.offsetWidth })
-  }
 
   useEffect(() => {
     let last = window.scrollY
     const onScroll = () => {
       const y = window.scrollY
-      setScrolled(y > 40)
+      // the hero owns the capsule while it's on screen; the header takes over after
+      setScrolled(y > window.innerHeight * 0.75)
       setHidden(y > last && y > 400) // hide on scroll-down, show on up
       last = y
     }
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -75,7 +54,7 @@ export default function Nav({ scrollTo, soundOn, onToggleSound }) {
       style={{ transform: hidden ? 'translateY(-110%)' : 'translateY(0)' }}
     >
       <div
-        className="relative flex items-center justify-between px-5 py-8 transition-colors duration-500 sm:px-9 sm:py-11"
+        className="relative flex items-center justify-between px-5 py-6 transition-colors duration-500 sm:px-9 sm:py-7"
         style={{
           backdropFilter: scrolled ? 'blur(10px)' : 'none',
           background: scrolled
@@ -98,43 +77,19 @@ export default function Nav({ scrollTo, soundOn, onToggleSound }) {
           </span>
         </button>
 
-        {/* glass nav capsule — parked on the left, right above the hero kicker */}
-        <ul
-          onMouseLeave={() => setThumb(null)}
-          className="absolute left-6 top-1/2 flex -translate-y-1/2 items-center rounded-full p-1 sm:left-[14%] sm:p-1.5 lg:left-[22%]"
-          style={CAPSULE}
-        >
-            {/* sliding liquid-glass thumb — follows the hovered item */}
-            <span
-              aria-hidden
-              className="pointer-events-none absolute bottom-1 top-1 rounded-full transition-all duration-300 ease-surgical sm:bottom-1.5 sm:top-1.5"
-              style={{
-                left: thumb ? thumb.left : 0,
-                width: thumb ? thumb.width : 0,
-                opacity: thumb ? 1 : 0,
-                background: 'linear-gradient(150deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06))',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 8px -2px rgba(0,0,0,0.4)',
-              }}
-            />
-            {ITEMS.map((item, i) => (
-              <li key={item.label}>
-                <button
-                  ref={(el) => (itemRefs.current[i] = el)}
-                  onClick={() => scrollTo(item.target)}
-                  onMouseEnter={() => {
-                    moveThumb(i)
-                    sfx.tick()
-                  }}
-                  data-cursor="hover"
-                  className="relative z-10 rounded-full px-3 py-1.5 font-body text-[11px] uppercase tracking-[0.18em] text-bone/65 transition-colors duration-300 hover:text-bone sm:px-4 sm:text-[12px]"
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
-        </ul>
-
-        <SoundToggle on={soundOn} onToggle={onToggleSound} />
+        <div className="flex items-center gap-4 sm:gap-6">
+          {/* takes over once the hero's own capsule has scrolled away */}
+          <NavCapsule
+            scrollTo={scrollTo}
+            className="hidden md:flex"
+            style={{
+              opacity: scrolled ? 1 : 0,
+              pointerEvents: scrolled ? 'auto' : 'none',
+              transition: 'opacity .45s ease',
+            }}
+          />
+          <SoundToggle on={soundOn} onToggle={onToggleSound} />
+        </div>
       </div>
     </header>
   )
