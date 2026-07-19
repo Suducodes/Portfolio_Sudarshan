@@ -40,10 +40,15 @@ function Card({ p, big = true, active = true }) {
           )}
         </div>
       </figure>
-      <div className="mt-4 flex items-baseline justify-between gap-3">
+      <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
         <span className="font-body text-[11px] tracking-widest text-bone/45">[{p.index}]</span>
-        <span className="font-body text-[12px] leading-snug text-bone/55">{p.subtitle}</span>
-        <span className="shrink-0 whitespace-nowrap font-body text-[11px] tracking-wide text-bone/45">// {p.date}</span>
+        <span className="ml-auto shrink-0 whitespace-nowrap font-body text-[11px] tracking-wide text-bone/45 sm:order-3 sm:ml-0">
+          // {p.date}
+        </span>
+        {/* full width on mobile so it never fights the date */}
+        <span className="w-full font-body text-[12px] leading-snug text-bone/55 sm:order-2 sm:ml-auto sm:w-auto sm:flex-1 sm:text-right">
+          {p.subtitle}
+        </span>
       </div>
     </>
   )

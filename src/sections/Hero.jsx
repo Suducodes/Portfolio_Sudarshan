@@ -54,7 +54,7 @@ export default function Hero({ ready, scrollTo }) {
           initial={{ opacity: 0, y: 30 }}
           animate={ready ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.5, duration: 1.4, ease }}
-          className="absolute bottom-0 right-[4%] z-[10] h-[56%] max-w-none object-contain object-bottom sm:h-[94%]"
+          className="absolute bottom-0 right-[-8%] z-[10] h-[46%] max-w-none object-contain object-bottom sm:right-[4%] sm:h-[94%]"
           style={{ filter: 'drop-shadow(0 30px 70px rgba(0,0,0,0.7))' }}
         />
         {/* soft glow behind the figure */}
@@ -66,16 +66,16 @@ export default function Hero({ ready, scrollTo }) {
         {/* gradients: dark at top for nav, transparent at bottom (seamless),
             left scrim so the name reads on the dark side */}
         <div className="absolute inset-0 bg-gradient-to-b from-void/55 via-transparent via-55% to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-void/90 via-void/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-void/95 via-void/70 to-void/30 sm:from-void/90 sm:via-void/25 sm:to-transparent" />
 
         {/* name — left, artistic */}
-        <div className="absolute inset-y-0 left-6 z-[20] flex max-w-[62%] flex-col justify-center sm:left-[14%] md:max-w-[50%] lg:left-[22%]">
+        <div className="absolute inset-y-0 left-6 z-[20] flex max-w-[86%] flex-col justify-center sm:left-[14%] sm:max-w-[62%] md:max-w-[50%] lg:left-[22%]">
           {/* glass nav capsule — anchored to the column, comfortably above the kicker */}
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.1, duration: 1, ease }}
-            className="mb-10"
+            className="mb-7 sm:mb-10"
           >
             <NavCapsule scrollTo={scrollTo} />
           </motion.div>
@@ -84,10 +84,10 @@ export default function Hero({ ready, scrollTo }) {
             initial={{ opacity: 0, x: -10 }}
             animate={ready ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.15, duration: 1 }}
-            className="mb-6 flex items-center gap-4"
+            className="mb-5 flex items-center gap-3 sm:mb-6 sm:gap-4"
           >
-            <span className="h-px w-14 bg-teal/60" />
-            <span className="font-body text-[10px] uppercase tracking-[0.45em] text-teal sm:text-[11px]">
+            <span className="h-px w-8 shrink-0 bg-teal/60 sm:w-14" />
+            <span className="whitespace-nowrap font-body text-[9px] uppercase tracking-[0.18em] text-teal sm:text-[11px] sm:tracking-[0.45em]">
               Coimbatore → Toronto · 2026
             </span>
           </motion.div>
@@ -120,7 +120,7 @@ export default function Hero({ ready, scrollTo }) {
             variants={up}
             initial="hidden"
             animate={ready ? 'show' : 'hidden'}
-            className="mt-5 font-body text-xs uppercase tracking-[0.38em] text-teal sm:text-sm"
+            className="mt-4 font-body text-[10px] uppercase tracking-[0.16em] text-teal sm:mt-5 sm:text-sm sm:tracking-[0.38em]"
             style={{ textShadow: '0 2px 20px rgba(0,0,0,0.95)' }}
           >
             Biomedical Engineer · Researcher · Builder
@@ -140,7 +140,7 @@ export default function Hero({ ready, scrollTo }) {
             initial={{ opacity: 0, y: 12 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 1.35, duration: 0.9, ease }}
-            className="mt-9 flex flex-wrap items-center gap-3"
+            className="mt-6 flex flex-wrap items-center gap-3 sm:mt-9"
           >
             <Glass
               as="button"
@@ -151,7 +151,7 @@ export default function Hero({ ready, scrollTo }) {
             </Glass>
             <button
               onClick={() => scrollTo?.('#contact')}
-              className="rounded-full px-6 py-3 font-body text-[12px] uppercase tracking-[0.22em] text-bone/55 transition-colors duration-300 hover:text-teal"
+              className="rounded-full px-5 py-3 font-body text-[11px] uppercase tracking-[0.16em] text-bone/75 transition-colors duration-300 hover:text-teal sm:px-6 sm:text-[12px] sm:tracking-[0.22em]"
             >
               Get in touch
             </button>

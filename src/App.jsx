@@ -89,6 +89,13 @@ export default function App() {
       raf = 0
       const work = document.getElementById('work')
       if (!work) return
+      // below the orbit breakpoint Works is a plain stacked list — the heart has
+      // no choreography to belong to there, so keep it out of the way entirely
+      if (window.innerWidth < 880) {
+        scrollState.heartReveal = 0
+        scrollState.heartY = -6
+        return
+      }
       const r = work.getBoundingClientRect()
       const vh = window.innerHeight
       // rise from below as Work approaches, exit up as it leaves — no pop
