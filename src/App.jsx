@@ -155,13 +155,20 @@ export default function App() {
         </div>
       )}
 
-      {/* readability scrim — darkens the text side, lets the helix glow on the right */}
-      <div className="pointer-events-none fixed inset-0 z-[5] bg-gradient-to-r from-void/85 via-void/35 to-transparent" />
+      {/* readability scrim. On phones a left→right scrim reads as a vertical band
+          across a narrow portrait screen, so use an even tint there instead. */}
+      <div className="pointer-events-none fixed inset-0 z-[5] bg-void/45 sm:hidden" />
+      <div className="pointer-events-none fixed inset-0 z-[5] hidden bg-gradient-to-r from-void/85 via-void/35 to-transparent sm:block" />
 
-      {/* cinematic vignette — binds the imagery + UI into one frame */}
+      {/* cinematic vignette — binds the imagery + UI into one frame.
+          Softer + wider on phones so it doesn't pinch into side bars. */}
       <div
-        className="pointer-events-none fixed inset-0 z-[45]"
+        className="pointer-events-none fixed inset-0 z-[45] hidden sm:block"
         style={{ background: 'radial-gradient(125% 100% at 50% 42%, transparent 56%, rgba(0,0,0,0.5) 100%)' }}
+      />
+      <div
+        className="pointer-events-none fixed inset-0 z-[45] sm:hidden"
+        style={{ background: 'radial-gradient(150% 78% at 50% 45%, transparent 72%, rgba(0,0,0,0.34) 100%)' }}
       />
 
       <Nav scrollTo={scrollTo} soundOn={soundOn} onToggleSound={toggleSound} />

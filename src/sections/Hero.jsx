@@ -66,10 +66,14 @@ export default function Hero({ ready, scrollTo }) {
         {/* gradients: dark at top for nav, transparent at bottom (seamless),
             left scrim so the name reads on the dark side */}
         <div className="absolute inset-0 bg-gradient-to-b from-void/55 via-transparent via-55% to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-void/95 via-void/70 to-void/30 sm:from-void/90 sm:via-void/25 sm:to-transparent" />
+        {/* phones: lift the text off the figure from below — a side scrim would
+            band vertically. Desktop keeps the left scrim for the split layout. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-void via-void/55 to-void/20 sm:hidden" />
+        <div className="absolute inset-0 hidden bg-gradient-to-r from-void/90 via-void/25 to-transparent sm:block" />
 
         {/* name — left, artistic */}
-        <div className="absolute inset-y-0 left-6 z-[20] flex max-w-[86%] flex-col justify-center sm:left-[14%] sm:max-w-[62%] md:max-w-[50%] lg:left-[22%]">
+        {/* phones: sit in the upper half so nothing lands on the figure's face */}
+        <div className="absolute inset-y-0 left-6 z-[20] flex max-w-[86%] flex-col justify-start pt-[13vh] sm:left-[14%] sm:max-w-[62%] sm:justify-center sm:pt-0 md:max-w-[50%] lg:left-[22%]">
           {/* glass nav capsule — anchored to the column, comfortably above the kicker */}
           <motion.div
             initial={{ opacity: 0, y: -8 }}
