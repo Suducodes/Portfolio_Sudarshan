@@ -57,6 +57,13 @@ export default {
           '0%': { backgroundPosition: '180% 0' },
           '60%, 100%': { backgroundPosition: '-80% 0' },
         },
+        dashflow: {
+          to: { strokeDashoffset: '-16' },
+        },
+        countup: {
+          from: { opacity: '0', transform: 'translateY(6px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'pulse-dot': 'pulse_dot 1.4s ease-in-out infinite',
@@ -64,6 +71,7 @@ export default {
         'spin-slow': 'spin_slow 32s linear infinite',
         marquee: 'marquee 28s linear infinite',
         sheen: 'sheen 7s ease-in-out infinite',
+        dashflow: 'dashflow .9s linear infinite',
       },
     },
   },

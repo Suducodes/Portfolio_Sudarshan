@@ -72,11 +72,57 @@ export const skillGroups = [
   { label: 'Electronics', items: ['Arduino', 'RP2040', 'Sensor interfacing', 'Device prototyping'] },
 ]
 
+/**
+ * Honours as a service-ribbon rack. `ribbon` is the stripe order (left→right),
+ * `device` is the metal pinned on the bar, `tier` drives its finish.
+ */
 export const awards = [
-  'Academic Topper — 3rd in B.E. Biomedical Engineering batch, KPRIET',
-  'Gold Best Cadet of Tamil Nadu — NCC Air Wing, Senior Division',
-  '4th Place, All India Best Cadet Competition (Senior Division)',
-  'IEEE EMBS Travel Grant Applicant 2026 — EMBC Paper #4706',
-  'Green Gala Innovation Award — PSG College of Technology, 2024',
-  "NCC 'C' Certificate (A Grade) — highest national NCC certification",
+  {
+    title: 'Gold Best Cadet of Tamil Nadu',
+    detail: 'NCC Air Wing · Senior Division',
+    year: '2025',
+    tier: 'gold',
+    device: '★',
+    ribbon: ['#0a3457', '#1a6ea8', '#E8C063', '#1a6ea8', '#0a3457'],
+  },
+  {
+    title: '4th Place, All India Best Cadet',
+    detail: 'Republic Day Camp, New Delhi · Senior Division',
+    year: '2025',
+    tier: 'silver',
+    device: '4',
+    ribbon: ['#7a3f14', '#C8621F', '#EDE7DA', '#2E7D4F', '#14361f'],
+  },
+  {
+    title: 'Academic Topper — Rank 3',
+    detail: 'B.E. Biomedical Engineering batch, KPRIET · CGPA 8.5',
+    year: '2025',
+    tier: 'silver',
+    device: '3',
+    ribbon: ['#0a3b38', '#00E5C4', '#F0EDE6', '#00E5C4', '#0a3b38'],
+  },
+  {
+    title: "NCC 'C' Certificate — A Grade",
+    detail: 'Highest national NCC certification',
+    year: '2024',
+    tier: 'bronze',
+    device: 'A',
+    ribbon: ['#B3222B', '#123E7C', '#4FA3D9', '#123E7C', '#B3222B'],
+  },
+  {
+    title: 'Green Gala Innovation Award',
+    detail: 'PSG College of Technology · Carbon capture via cyanobacteria',
+    year: '2024',
+    tier: 'bronze',
+    device: '✦',
+    ribbon: ['#14361f', '#3FA85F', '#E8C063', '#3FA85F', '#14361f'],
+  },
+  {
+    title: 'IEEE EMBS Travel Grant',
+    detail: 'EMBC 2026 · Paper #4706 — applicant',
+    year: '2026',
+    tier: 'bronze',
+    device: '✈',
+    ribbon: ['#0b2e4f', '#1B6FB3', '#EDE7DA', '#1B6FB3', '#0b2e4f'],
+  },
 ]
