@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { projects } from '../data/projects'
 import ProjectMotif from '../components/fx/ProjectMotif'
-import { Reveal, RevealLines } from '../components/anim/Reveal'
+import { Reveal } from '../components/anim/Reveal'
 import { asset } from '../lib/asset'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { scrollState } from '../lib/scrollState'
@@ -59,6 +59,7 @@ export default function Works({ onOpen }) {
   const sectionRef = useRef(null)
   const ringRef = useRef(null)
   const slots = useRef([])
+  const cardRefs = useRef([])
   const [activeIdx, setActiveIdx] = useState(0)
 
   useEffect(() => {
@@ -115,25 +116,90 @@ export default function Works({ onOpen }) {
     }
   }, [desktop])
 
+  /* Phones get the same arc as the desktop orbit — the heart rises in, turns
+     through the projects, then leaves — but choreographed for a vertical list:
+     it sits *behind* the cards while they slide past and lean toward you. */
+  useEffect(() => {
+    if (desktop) return
+    const section = sectionRef.current
+    if (!section) return
+    let raf
+    let cur = 0
+    let focus = -1
+    const last = []
+    const loop = () => {
+      raf = requestAnimationFrame(loop)
+      const rect = section.getBoundingClientRect()
+      const vh = window.innerHeight
+      if (rect.bottom < -80 || rect.top > vh * 1.3) {
+        scrollState.worksActive = false
+        return
+      }
+      const total = Math.max(1, section.offsetHeight - vh)
+      const target = clamp(-rect.top / total, 0, 1)
+      cur += (target - cur) * 0.1
+      scrollState.worksActive = true
+      scrollState.worksProgress = cur
+      scrollState.worksRot = cur * 300 // one slow turn across the whole section
+
+      // each card leans as it crosses the middle of the screen
+      const mid = vh * 0.5
+      cardRefs.current.forEach((el, i) => {
+        if (!el) return
+        const r = el.getBoundingClientRect()
+        const k = clamp((r.top + r.height / 2 - mid) / vh, -1, 1)
+        const t = `perspective(900px) rotateX(${(-k * 8).toFixed(2)}deg) scale(${(
+          1 - Math.min(0.1, Math.abs(k) * 0.12)
+        ).toFixed(3)})`
+        const s = last[i] || (last[i] = {})
+        if (s.t !== t) el.style.transform = (s.t = t)
+      })
+
+      const idx = clamp(Math.round(cur * (N - 1)), 0, N - 1)
+      if (idx !== focus) {
+        focus = idx
+        setActiveIdx(idx)
+      }
+    }
+    raf = requestAnimationFrame(loop)
+    return () => {
+      scrollState.worksActive = false
+      cancelAnimationFrame(raf)
+    }
+  }, [desktop])
+
   if (!desktop) {
     return (
-      <section id="work" className="relative w-full px-6 py-28">
+      <section id="work" ref={sectionRef} className="relative w-full px-5 pb-32 pt-20">
+        {/* light enough that the heart still reads behind the stack */}
         <div
-          className="pointer-events-none absolute inset-0 bg-void/55"
+          className="pointer-events-none absolute inset-0 bg-void/25"
           style={{
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent)',
-            maskImage: 'linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent)',
+            maskImage: 'linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent)',
           }}
         />
-        <div className="relative z-10 mx-auto flex max-w-xl flex-col items-center gap-20">
-          <RevealLines
-            as="h2"
-            className="text-center font-serif text-[clamp(2rem,9vw,3rem)] font-500 uppercase leading-[0.95] tracking-tight text-bone"
-            lines={[<>Things I’ve built</>, <span key="m" className="text-teal">that matter.</span>]}
-          />
-          {projects.map((p) => (
-            <Reveal key={p.id} blur y={50} className="group/card w-full cursor-pointer" onClick={() => onOpen(projects.indexOf(p))}>
-              <Card p={p} />
+
+        {/* chapter marker — rides along and counts the descent */}
+        <div className="sticky top-[72px] z-[30] mb-12 flex items-end justify-between gap-4">
+          <div className="pointer-events-none">
+            <p className="font-body text-[9px] uppercase tracking-[0.4em] text-teal/80">Selected Work</p>
+            <h2 className="mt-1.5 font-serif text-[26px] uppercase leading-[0.95] tracking-tight text-bone">
+              Things I’ve built <span className="text-teal">that matter.</span>
+            </h2>
+          </div>
+          <span className="shrink-0 pb-1 font-display text-[11px] tracking-[0.18em] text-bone/50">
+            {String(activeIdx + 1).padStart(2, '0')}
+            <span className="text-bone/25"> / {String(N).padStart(2, '0')}</span>
+          </span>
+        </div>
+
+        <div className="relative z-10 mx-auto flex max-w-xl flex-col gap-16">
+          {projects.map((p, i) => (
+            <Reveal key={p.id} blur y={40} className="w-full cursor-pointer" onClick={() => onOpen(i)}>
+              <div ref={(el) => (cardRefs.current[i] = el)} className="will-change-transform">
+                <Card p={p} />
+              </div>
             </Reveal>
           ))}
         </div>

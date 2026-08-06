@@ -20,7 +20,10 @@ function AdaptiveResolution({ capIdle = 1600, capHeart = 1200 }) {
   const cur = useRef(-1)
   useFrame(() => {
     const cap = scrollState.heartReveal > 0.08 ? capHeart : capIdle
-    const want = Math.min(1, cap / width)
+    // phones have few CSS pixels but dense screens — 1x would look mushy, so
+    // allow up to 2x there while the absolute pixel cap still bounds the cost
+    const ceiling = width < 880 ? Math.min(2, window.devicePixelRatio || 1) : 1
+    const want = Math.min(ceiling, cap / width)
     if (Math.abs(cur.current - want) > 0.01) {
       cur.current = want
       gl.setPixelRatio(want)

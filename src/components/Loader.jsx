@@ -27,7 +27,13 @@ export default function Loader({ onDone }) {
       else setTimeout(() => setDone(true), 120)
     }
     raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
+    // rAF is suspended in background tabs — a visitor who opens the link and
+    // switches apps must not come back to a loader frozen mid-count
+    const bail = setTimeout(() => setDone(true), DUR + 900)
+    return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(bail)
+    }
   }, [])
 
   return (

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, Center } from '@react-three/drei'
 import * as THREE from 'three'
 import { scrollState } from '../../lib/scrollState'
@@ -25,6 +25,14 @@ export default function Heart({ url = asset('heart.glb') }) {
   const group = useRef()
   const { scene } = useGLTF(url)
   const cur = useRef({ y: TOP_Y, rot: 0 })
+  const vw = useThree((s) => s.size.width)
+  // a phone's view frustum is ~3 units wide at this camera distance — the
+  // desktop scale would spill far past both edges, so size it to the viewport
+  const scale = vw < 880 ? 2.5 : SCALE
+  // vertical FOV is aspect-independent, so ±3.2 is already ~one screen height.
+  // On phones the heart is a backdrop to a long list — it should drift, not
+  // leave, so it travels roughly half a screen across the whole descent.
+  const span = vw < 880 ? 0.5 : 1
 
   useFrame((state) => {
     if (!group.current) return
@@ -35,7 +43,7 @@ export default function Heart({ url = asset('heart.glb') }) {
 
     group.current.visible = reveal > 0.01
 
-    const tY = lerp(TOP_Y, BOTTOM_Y, wp) + slide
+    const tY = lerp(TOP_Y * span, BOTTOM_Y * span, wp) + slide
     const tRot = -scrollState.worksRot * DEG // pinned to the panels
 
     const c = cur.current
@@ -45,7 +53,7 @@ export default function Heart({ url = asset('heart.glb') }) {
     group.current.position.y = c.y
     group.current.rotation.y = c.rot
     group.current.rotation.x = -0.02
-    group.current.scale.setScalar(SCALE * (1 + 0.015 * beat(t * (62 / 60))))
+    group.current.scale.setScalar(scale * (1 + 0.015 * beat(t * (62 / 60))))
   })
 
   return (
