@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bio-Vision Surgical · Links</title>
+<meta name="description" content="Links for the TENCON 2026 paper Bio-Vision Surgical: source code, live demo and author profiles.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#002060; --deep:#000845; --ink:#1b2130; --muted:#5a6478; --rule:#dfe5ee;
+    --tint:#eef2f7; --red:#d7262e; --pale:#b1d4e0; --white:#fff;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:Montserrat,system-ui,sans-serif;color:var(--ink);background:var(--tint);line-height:1.45;min-height:100vh}
+  a{color:inherit;text-decoration:none}
+
+  header{
+    background:
+      radial-gradient(120% 90% at 50% 0%, #0a2a78 0%, var(--deep) 62%);
+    color:var(--white);padding:36px 20px 64px;text-align:center;position:relative;overflow:hidden
+  }
+  header::before{ /* faint batik-style lattice, echoing the conference template */
+    content:"";position:absolute;inset:0;opacity:.07;
+    background-image:
+      radial-gradient(circle at 25% 25%, #fff 0 2px, transparent 3px),
+      radial-gradient(circle at 75% 75%, #fff 0 2px, transparent 3px);
+    background-size:34px 34px
+  }
+  .chip{display:inline-block;position:relative;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--pale);border:1px solid rgba(177,212,224,.45);border-radius:99px;padding:6px 14px}
+  h1{position:relative;font-size:clamp(26px,7vw,36px);font-weight:800;line-height:1.12;margin:18px auto 10px;max-width:560px}
+  header p{position:relative;font-size:14px;color:var(--pale);max-width:460px;margin:0 auto}
+
+  main{max-width:600px;margin:-38px auto 0;padding:0 16px 40px;position:relative}
+  h2{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:30px 4px 12px}
+  h2:first-child{margin-top:0}
+
+  .card{display:block;background:var(--white);border-radius:18px;overflow:hidden;margin-bottom:14px;
+    box-shadow:0 1px 2px rgba(0,32,96,.06),0 8px 24px rgba(0,32,96,.08);
+    transition:transform .18s ease,box-shadow .18s ease}
+  .card:hover,.card:focus-visible{transform:translateY(-2px);box-shadow:0 2px 4px rgba(0,32,96,.08),0 14px 30px rgba(0,32,96,.13);outline:none}
+  .card:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+  .thumb{aspect-ratio:16/9;background:var(--tint) center/cover no-repeat;position:relative}
+  .badge{position:absolute;left:12px;bottom:12px;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:99px}
+  .badge.live{background:var(--red)}
+  .body{display:flex;align-items:center;gap:14px;padding:15px 18px}
+  .body strong{display:block;font-size:17px;font-weight:700;color:var(--navy);line-height:1.25}
+  .body span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+  .go{margin-left:auto;flex:none;width:34px;height:34px;border-radius:50%;background:var(--tint);display:grid;place-items:center}
+  .go svg{width:16px;height:16px;stroke:var(--navy);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+  /* compact rows for people */
+  .person{background:var(--white);border-radius:18px;margin-bottom:14px;padding:18px;
+    box-shadow:0 1px 2px rgba(0,32,96,.06),0 8px 24px rgba(0,32,96,.08)}
+  .who{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .av{width:50px;height:50px;border-radius:50%;background:var(--navy);color:var(--white);display:grid;place-items:center;
+    font-weight:800;font-size:17px;flex:none}
+  .who strong{display:block;font-size:17px;color:var(--navy);font-weight:700}
+  .who span{font-size:12.5px;color:var(--muted)}
+  .pills{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:99px;background:var(--tint);
+    color:var(--navy);font-size:13.5px;font-weight:600;transition:background .15s,color .15s}
+  .pill:hover,.pill:focus-visible{background:var(--navy);color:var(--white);outline:none}
+  .pill svg{width:16px;height:16px;fill:currentColor}
+
+  footer{text-align:center;font-size:12px;color:var(--muted);padding:6px 24px 36px}
+  footer b{color:var(--navy)}
+</style>
+</head>
+<body>
+<header>
+  <span class="chip">TENCON 2026 · Bali</span>
+  <h1>Bio-Vision Surgical</h1>
+  <p>A browser-native, gesture-interactive pipeline for patient-specific coronary visualization on consumer hardware.</p>
+</header>
+
+<main>
+  <a class="card" href="https://suducodes.github.io/BIOVISION_V2/" target="_blank" rel="noopener">
+    <div class="thumb" style="background-image:url(img/viewer.jpg)"><span class="badge live">Live demo</span></div>
+    <div class="body">
+      <div><strong>Try the viewer</strong><span>Runs in your browser with a webcam. No install.</span></div>
+      <i class="go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></i>
+    </div>
+  </a>
+
+  <a class="card" href="https://github.com/Suducodes/BIOVISION_V2" target="_blank" rel="noopener">
+    <div class="thumb" style="background-image:url(img/mesh.jpg)"><span class="badge">Source code</span></div>
+    <div class="body">
+      <div><strong>Code on GitHub</strong><span>Mesh generation scripts and the Three.js viewer.</span></div>
+      <i class="go"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></i>
+    </div>
+  </a>
+
+  <h2>The authors</h2>
+
+  <div class="person">
+    <div class="who"><div class="av">SV</div>
+      <div><strong>Sudarshan Vasanthakumar</strong><span>Biomedical Engineering, KPR Institute of Engineering and Technology</span></div></div>
+    <div class="pills">
+      <a class="pill" href="https://www.linkedin.com/in/sudarshan-vasanthakumar-583b24298/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4V21H3V9.75Zm6.5 0h3.8v1.54h.06c.53-1 1.82-2.05 3.75-2.05 4 0 4.74 2.63 4.74 6.05V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.59V21h-4V9.75Z"/></svg>LinkedIn</a>
+      <a class="pill" href="https://suducodes.github.io/Portfolio_Sudarshan/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.9 9h-3.1a15.6 15.6 0 0 0-1.2-5.2A8 8 0 0 1 18.9 11ZM12 4c.8 1 1.9 3.3 2.2 7H9.8C10.1 7.3 11.2 5 12 4ZM9.4 5.8A15.6 15.6 0 0 0 8.2 11H5.1a8 8 0 0 1 4.3-5.2ZM5.1 13h3.1c.1 1.9.5 3.7 1.2 5.2A8 8 0 0 1 5.1 13Zm4.7 0h4.4c-.3 3.7-1.4 6-2.2 7-.8-1-1.9-3.3-2.2-7Zm5 5.2c.7-1.5 1.1-3.3 1.2-5.2h3.1a8 8 0 0 1-4.3 5.2Z"/></svg>Portfolio</a>
+      <a class="pill" href="https://github.com/Suducodes" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.7 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>GitHub</a>
+    </div>
+  </div>
+
+  <div class="person">
+    <div class="who"><div class="av">DM</div>
+      <div><strong>Dhakshatha M K</strong><span>Biomedical Engineering, KPR Institute of Engineering and Technology</span></div></div>
+    <div class="pills">
+      <a class="pill" href="https://www.linkedin.com/in/dhakshatha-m-k" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4V21H3V9.75Zm6.5 0h3.8v1.54h.06c.53-1 1.82-2.05 3.75-2.05 4 0 4.74 2.63 4.74 6.05V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.59V21h-4V9.75Z"/></svg>LinkedIn</a>
+      <a class="pill" href="mailto:dhakshatha@ieee.org">
+        <svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm9 7.2L4.6 7 4 8.3l8 5.5 8-5.5L19.4 7 12 12.2Z"/></svg>Email</a>
+    </div>
+  </div>
+</main>
+
+<footer><b>TENCON 2026</b> · Poster P-A05 · Paper ID 1571297148</footer>
+</body>
+</html>
