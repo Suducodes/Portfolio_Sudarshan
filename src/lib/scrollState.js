@@ -12,9 +12,11 @@ export const scrollState = {
   heartY: 0, // slide offset: below on enter, above on exit
   premiseP: 0, // 0..1 through the pinned premise scene
   heartMode: 0, // 0 = planet (premise) → 1 = dive (works descent)
+  hoverPanel: null, // id of the glass plate under the pointer
   // flight log (research chapter)
   flightReveal: 0,
   flightP: 0,
+  flightTop: 1, // the chapter's top edge, in viewport heights
   // the signal (contact) portal
   portalReveal: 0,
 }

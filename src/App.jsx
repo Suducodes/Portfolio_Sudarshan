@@ -138,11 +138,13 @@ export default function App() {
         const r = research.getBoundingClientRect()
         scrollState.flightReveal = cl(1 - r.top / (vh * 0.8)) * (1 - cl(1 - r.bottom / (vh * 0.7)))
         scrollState.flightP = cl(-r.top / Math.max(1, r.height - vh))
+        scrollState.flightTop = r.top / vh // phones pin the globe to the chapter, not the screen
       }
       const contact = document.getElementById('contact')
       if (contact) {
         const r = contact.getBoundingClientRect()
-        scrollState.portalReveal = cl(1 - r.top / vh)
+        // in with the chapter, fully out before the footer's links arrive
+        scrollState.portalReveal = cl(1 - r.top / vh) * (1 - cl(1 - (r.bottom - vh * 0.25) / (vh * 0.45)))
       }
     }
     const onScroll = () => {
@@ -219,7 +221,7 @@ export default function App() {
       <main className="relative z-10">
         <Hero ready={ready} scrollTo={scrollTo} />
         <Premise />
-        <Works onOpen={openProject} scrollTo={scrollTo} />
+        <Works onOpen={openProject} scrollTo={scrollTo} glass={!reducedMotion} />
         <Index onOpen={openProject} />
         <FlightLog onOpen={openProject} />
         <Office />

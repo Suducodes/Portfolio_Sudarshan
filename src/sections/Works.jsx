@@ -6,6 +6,7 @@ import ChapterMark from '../components/ChapterMark'
 import { asset } from '../lib/asset'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { scrollState } from '../lib/scrollState'
+import { picker } from '../lib/picker'
 
 const N = featured.length
 const STEP = 360 / N
@@ -68,9 +69,11 @@ function Card({ p, i }) {
   )
 }
 
-export default function Works({ onOpen, scrollTo }) {
+export default function Works({ onOpen, scrollTo, glass = true }) {
   const desktop = useMediaQuery('(min-width: 880px)')
   const sectionRef = useRef(null)
+  const stageRef = useRef(null)
+  const hoverRaf = useRef(0)
   const ringRef = useRef(null)
   const slots = useRef([])
   const cardRefs = useRef([])
@@ -192,6 +195,30 @@ export default function Works({ onOpen, scrollTo }) {
 
   const active = featured[activeIdx]
 
+  // the glass plates live in WebGL behind this DOM — ask them what's under the pointer
+  const ndc = (e) => [(e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1]
+  const onStageClick = (e) => {
+    if (!glass || e.target.closest('button, a')) return
+    const id = picker.pick?.(...ndc(e))
+    if (id) onOpen(id)
+  }
+  const onStageMove = (e) => {
+    if (!glass || hoverRaf.current) return
+    const [x, y] = ndc(e)
+    hoverRaf.current = requestAnimationFrame(() => {
+      hoverRaf.current = 0
+      const id = picker.pick?.(x, y) ?? null
+      if (id !== scrollState.hoverPanel) {
+        scrollState.hoverPanel = id
+        if (stageRef.current) stageRef.current.style.cursor = id ? 'pointer' : ''
+      }
+    })
+  }
+  const onStageLeave = () => {
+    scrollState.hoverPanel = null
+    if (stageRef.current) stageRef.current.style.cursor = ''
+  }
+
   if (!desktop) {
     return (
       <section id="work" ref={sectionRef} className="relative w-full px-5 pb-32 pt-20">
@@ -242,7 +269,13 @@ export default function Works({ onOpen, scrollTo }) {
           maskImage: 'linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent)',
         }}
       />
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
+      <div
+        ref={stageRef}
+        onClick={onStageClick}
+        onMouseMove={onStageMove}
+        onMouseLeave={onStageLeave}
+        className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden"
+      >
         <div className="pointer-events-none absolute left-1/2 top-[8%] z-[200] -translate-x-1/2 text-center">
           <ChapterMark n="02" title="Selected work — descend the helix" center />
           <h2 className="display mt-4 text-[clamp(1.2rem,2.2vw,2.1rem)] font-[560] text-bone">
@@ -250,6 +283,9 @@ export default function Works({ onOpen, scrollTo }) {
           </h2>
         </div>
 
+        {/* WebGL draws the ring as real glass; this CSS ring is only the fallback
+            for visitors who get no WebGL (reduced motion) */}
+        {!glass && (
         <div style={{ perspective: '1500px' }} className="relative h-full w-full">
           <div ref={ringRef} className="absolute left-1/2 top-1/2 will-change-transform" style={{ transformStyle: 'preserve-3d' }}>
             {featured.map((p, i) => (
@@ -273,6 +309,7 @@ export default function Works({ onOpen, scrollTo }) {
             ))}
           </div>
         </div>
+        )}
 
         {/* readout of the specimen in focus */}
         <div className="absolute bottom-10 left-10 z-[200] w-[min(330px,26vw)]">

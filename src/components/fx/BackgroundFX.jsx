@@ -4,6 +4,10 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { KernelSize } from 'postprocessing'
 import Nebula from './Nebula'
 import Heart from './Heart'
+import Globe from './Globe'
+import GlassPanels from './GlassPanels'
+import Dust from './Dust'
+import Portal from './Portal'
 import SafeModel from './SafeModel'
 import { scrollState } from '../../lib/scrollState'
 
@@ -55,6 +59,14 @@ export default function BackgroundFX() {
           <Heart />
         </Suspense>
       </SafeModel>
+      {/* the works ring, as real glass that refracts the heart */}
+      <GlassPanels />
+      {/* the flight log: two papers, two continents */}
+      <Globe />
+      {/* the signal: a chrome ring the invitation sits inside */}
+      <Portal />
+      {/* motes at every depth, moving with the scroll */}
+      <Dust />
       <EffectComposer disableNormalPass multisampling={0}>
         <Bloom luminanceThreshold={0.62} intensity={0.34} kernelSize={KernelSize.SMALL} mipmapBlur />
       </EffectComposer>

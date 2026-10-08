@@ -96,7 +96,7 @@ export default function FlightLog({ onOpen }) {
       const r = s.getBoundingClientRect()
       const p = Math.max(0, Math.min(1, -r.top / Math.max(1, s.offsetHeight - window.innerHeight)))
       setProg(p)
-      const i = p < 0.22 ? 0 : p < 0.6 ? 1 : 2
+      const i = p < 0.2 ? 0 : p < 0.6 ? 1 : 2
       if (i !== last) {
         if (last !== -1) sfx.tick()
         last = i
@@ -115,8 +115,13 @@ export default function FlightLog({ onOpen }) {
   }, [desktop])
 
   const s = STOPS[stop]
-  // the plane eases between airports rather than tracking raw scroll
-  const planeP = Math.min(1, Math.max(0, (prog - 0.1) / 0.62))
+  // the route bar's plane moves exactly when the globe draws each flight
+  // (same keyframes as Globe.jsx: CBE→YYZ over 0.12–0.42, CBE→DPS 0.62–0.88)
+  const sm = (a, b, x) => {
+    const t = Math.max(0, Math.min(1, (x - a) / (b - a)))
+    return t * t * (3 - 2 * t)
+  }
+  const planeP = 0.5 * sm(0.12, 0.42, prog) + 0.5 * sm(0.62, 0.88, prog)
 
   return (
     <section id="research" className="relative w-full">
@@ -148,8 +153,8 @@ export default function FlightLog({ onOpen }) {
             </div>
           </div>
 
-          {/* the stamp lands where the globe will hold the destination */}
-          <div className="absolute left-[58%] top-[46%] -translate-x-1/2 -translate-y-1/2">
+          {/* the stamp lands on the globe's lower edge, like a postcard corner */}
+          <div className="absolute left-[50%] top-[70%] -translate-x-1/2 -translate-y-1/2">
             <AnimatePresence mode="popLayout">
               <motion.div
                 key={s.id}
@@ -165,7 +170,7 @@ export default function FlightLog({ onOpen }) {
                   date={s.date}
                   mark={s.mark}
                   ink={s.ink}
-                  size={340}
+                  size={250}
                   rotate={stop === 1 ? -9 : stop === 2 ? 7 : -3}
                 />
               </motion.div>
@@ -183,7 +188,9 @@ export default function FlightLog({ onOpen }) {
           <h2 className="display mt-8 text-[clamp(1.45rem,7vw,2rem)] font-[560] text-bone">
             Research that crossed <span className="text-teal">two oceans.</span>
           </h2>
-          <div className="mt-12 flex flex-col gap-16">
+          {/* the globe (WebGL, behind) rides in this gap with the chapter */}
+          <div className="h-[36vh]" aria-hidden />
+          <div className="mt-4 flex flex-col gap-16">
             {STOPS.map((st, i) => (
               <Reveal key={st.id} y={30}>
                 <Stamp code={st.code} top={st.top} bottom={st.bottom} date={st.date} mark={st.mark} ink={st.ink} size={200} rotate={i % 2 ? 7 : -7} />
