@@ -1,6 +1,6 @@
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 
-import Loader from './components/Loader'
+import Gate from './components/Gate'
 import Nav from './components/Nav'
 import ScrollHud from './components/ScrollHud'
 import VitalHud from './components/VitalHud'
@@ -30,8 +30,18 @@ const BackgroundFX = lazy(() => import('./components/fx/BackgroundFX'))
 const cl = (v) => Math.max(0, Math.min(1, v))
 const smooth = (v) => v * v * (3 - 2 * v)
 
+// The pulse gate shows once per session; `?nogate` skips it (for previews).
+const skipGate = (() => {
+  try {
+    return sessionStorage.getItem('sv-pulse') === '1' || new URLSearchParams(location.search).has('nogate')
+  } catch {
+    return false
+  }
+})()
+
 export default function App() {
-  const [ready, setReady] = useState(false)
+  const [ready, setReady] = useState(skipGate)
+  const [gateUp, setGateUp] = useState(!skipGate)
   const [openId, setOpenId] = useState(null)
   const reducedMotion = usePrefersReducedMotion()
   const { on: soundOn, toggle: toggleSound } = useAmbientSound()
@@ -41,12 +51,16 @@ export default function App() {
     sfx.setEnabled(soundOn)
   }, [soundOn])
 
-  // last-resort gate: the loader hands off via an exit animation, which also
-  // needs rAF. If frames never come (background tab), reveal the site anyway.
+  // hold the page still while the gate is up (Lenis may not exist yet on the
+  // first pass, so onReady below checks this ref too)
+  const gateRef = useRef(gateUp)
+  gateRef.current = gateUp
   useEffect(() => {
-    const t = setTimeout(() => setReady(true), 3600)
-    return () => clearTimeout(t)
-  }, [])
+    if (gateUp) lenisRef.current?.stop()
+    else lenisRef.current?.start()
+  }, [gateUp])
+  const enter = useCallback(() => setReady(true), [])
+  const gone = useCallback(() => setGateUp(false), [])
 
   // warm the heavy WebGL chunk while the loader plays, so it mounts instantly
   // once `ready` flips — without competing for the hero's first paint
@@ -78,6 +92,7 @@ export default function App() {
     enabled: !reducedMotion,
     onReady: (lenis) => {
       lenisRef.current = lenis
+      if (gateRef.current) lenis.stop()
       lenis.on('scroll', ({ progress, velocity }) => {
         scrollState.progress = progress || 0
         scrollState.velocity = velocity || 0
@@ -160,7 +175,7 @@ export default function App() {
 
   return (
     <div className="grain relative">
-      {!ready && <Loader onDone={() => setReady(true)} />}
+      {gateUp && <Gate onEnter={enter} onGone={gone} />}
 
       {/* one atmosphere, start to finish — colour is spent as light, not washes */}
       {!reducedMotion ? (
