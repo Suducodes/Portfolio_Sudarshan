@@ -1,65 +1,118 @@
 export const profile =
-  'Third-year Biomedical Engineering student building open-source, low-cost clinical tools for resource-constrained healthcare — from gesture-controlled surgical DICOM viewers to semi-supervised deep learning for coronary artery segmentation. Dual focus: translational wet-lab biomaterials and full-stack medical software.'
+  'Final-year Biomedical Engineering student at KPRIET, Coimbatore — building low-cost, on-device clinical tools: touchless surgical visualisation, semi-supervised coronary segmentation, webcam-based screening. Published at IEEE EMBC 2026 (Toronto) and IEEE TENCON 2026 (Bali). President of BMESI, Technical Lead of IEEE EMBS, intern at UnivLabs Technologies.'
 
-export const research = [
+// Home base for the flight log — KPRIET, Arasur, Coimbatore.
+export const home = { code: 'CBE', city: 'Coimbatore', lat: 11.08, lng: 77.14 }
+
+/**
+ * Papers, each a stamp in the passport. `lat/lng` place it on the globe;
+ * `ink` is the stamp colour.
+ */
+export const publications = [
   {
-    tag: 'Computational',
-    title: 'Coronary Artery Segmentation',
-    sub: 'Semi-supervised deep learning · with Dr. Haseeb Hassan',
-    year: '2025 — Present',
-    points: [
-      'Trained the Cross-Pseudo-Supervision (CPS) framework on ImageCAS (1,000 cases, 10% labeled).',
-      'Mean Dice 0.5725 · HD95 48.73 mm on 20 validation cases — ~30 h on an RTX 5060 (CUDA 12.8, Blackwell sm_120).',
-      'Patched PyTorch 2.7 / sm_120 compatibility, SSL4MIS EMA, and the preprocessing pipeline; generating NIfTI predictions for a co-authored paper.',
-    ],
+    id: 'embc',
+    venue: 'IEEE EMBC 2026',
+    full: 'Engineering in Medicine & Biology Conference',
+    city: 'Toronto',
+    country: 'Canada',
+    code: 'YYZ',
+    lat: 43.65,
+    lng: -79.38,
+    when: 'JUL 2026',
+    title: 'Zero-Footprint Virtual Dissection: Democratizing Anatomy Education via Web-Based Monocular Gesture Recognition',
+    note: 'Paper #4706 · Health Equity track',
+    ink: '#E2364B',
+    project: 'bio-vision',
   },
   {
-    tag: 'Wet-lab',
-    title: 'Sono-Ink — Ultrasound-Curable Bio-Ink',
-    sub: 'Lead researcher · ICIRIMST 2024 publication',
-    year: '2024',
-    points: [
-      'Formulated a novel ultrasound-responsive polymer bio-ink for biomedical casting and bone repair.',
-      'Published abstract at the 7th ICIRIMST; presented at Green Gala, PSG College of Technology.',
-    ],
+    id: 'tencon',
+    venue: 'IEEE TENCON 2026',
+    full: 'IEEE Region 10 Conference',
+    city: 'Bali',
+    country: 'Indonesia',
+    code: 'DPS',
+    lat: -8.65,
+    lng: 115.22,
+    when: '2026',
+    title: 'Bio-Vision Surgical: A Browser-Native, Gesture-Interactive Pipeline for Patient-Specific Coronary Visualization on Consumer Hardware',
+    note: 'Poster P-A05 · with Dhakshatha M K',
+    ink: '#4C86FF',
+    project: 'bio-vision-surgical',
   },
   {
-    tag: 'Wet-lab',
-    title: 'Banana-Peel & Aloe Wound Patch',
-    sub: 'Independent research · KPRIET Biomedical Lab',
-    year: '2024',
-    points: [
-      'Developed a bio-active wound dressing from banana-peel extract + aloe vera gel.',
-      'Full wet-lab workflow: extraction, formulation, pH/conductivity characterisation, optical microscopy; studied inflammation & proliferation in-vitro.',
-    ],
+    id: 'bhi',
+    venue: 'IEEE BHI 2026',
+    full: 'Biomedical & Health Informatics',
+    when: '2026',
+    title: 'Geometry-Aware Risk Estimation from Semi-Supervised Coronary Segmentation',
+    note: 'with Dhakshatha M K',
+    ink: '#A57BFF',
+    project: 'coronary',
   },
   {
-    tag: 'Wet-lab',
-    title: 'Green-Synthesised Copper Nanoparticles',
-    sub: 'Independent research · KPRIET Biomedical Lab',
-    year: '2024',
-    points: [
-      'Synthesised eco-friendly Cu nanoparticles using banana-peel extract as a green reducing agent — low-cost, scalable, no hazardous reagents.',
-      'Evaluated antibacterial efficacy via agar-diffusion assays; characterised morphology & stability.',
-    ],
+    id: 'icirimst',
+    venue: '7th ICIRIMST',
+    full: 'International conference',
+    when: '2024',
+    title: 'Sono-Ink: Novel Ultrasound-Responsive Polymer Ink for Biomedical Casting & Repair',
+    note: 'Lead author',
+    ink: '#3FBF73',
+  },
+  {
+    id: 'greengala',
+    venue: 'Green Gala 2024',
+    full: 'PSG College of Technology',
+    when: '2024',
+    title: 'Carbon Capture via Cyanobacteria',
+    note: 'Poster · Innovation Award',
+    ink: '#C9A46A',
   },
 ]
 
-export const publications = [
+// The wet bench — research that never needed a GPU.
+export const benchwork = [
   {
-    n: '01',
-    cite: 'S. Vasanthakumar et al., “Zero-Footprint Virtual Dissection: Touchless DICOM Navigation via Hand Gesture Recognition.”',
-    venue: 'IEEE EMBC 2026 · Paper #4706 · Health Equity Track — Accepted',
+    title: 'Sono-Ink',
+    line: 'An ultrasound-curable polymer bio-ink for casting and bone repair.',
+    year: '2024',
   },
   {
-    n: '02',
-    cite: 'S. Vasanthakumar, “Sono-Ink: Novel Ultrasound-Responsive Polymer Ink for Biomedical Casting & Repair.”',
-    venue: '7th ICIRIMST, 2024',
+    title: 'Banana-peel & aloe wound patch',
+    line: 'A bio-active dressing — extraction, formulation, pH and conductivity, optical microscopy, in-vitro.',
+    year: '2024',
   },
   {
-    n: '03',
-    cite: 'Poster — “Carbon Capture via Cyanobacteria.”',
-    venue: 'Green Gala, PSG College of Technology, 2024 — Innovation Award',
+    title: 'Green copper nanoparticles',
+    line: 'Cu nanoparticles reduced with banana-peel extract; antibacterial efficacy by agar diffusion.',
+    year: '2024',
+  },
+]
+
+/** The offices I hold — what people trust me with. */
+export const roles = [
+  {
+    role: 'President',
+    org: 'BMESI · KPRIET',
+    since: 'Jul 2026 —',
+    line: "Leading the department's Biomedical Engineering Society — and building its platform, journal pipeline and events from zero.",
+  },
+  {
+    role: 'Technical Lead',
+    org: 'IEEE EMBS · KPRIET SBC',
+    since: '2025 —',
+    line: 'Projects and workshops — and the research that became two IEEE papers.',
+  },
+  {
+    role: 'Intern',
+    org: 'UnivLabs Technologies',
+    since: 'Feb 2026 —',
+    line: 'Surgical modules team — operating-room software for a collaborative surgical platform.',
+  },
+  {
+    role: 'Coordinator',
+    org: "IGNUZ'26 · National symposium",
+    since: 'Oct 2026',
+    line: 'Six events over two days at our department — and the website that sold the passes.',
   },
 ]
 

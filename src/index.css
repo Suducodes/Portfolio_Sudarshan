@@ -18,8 +18,8 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: #070a0d;
-  color: #f0ede6;
+  background: #06080a;
+  color: #ece6da;
   font-family: 'Satoshi', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -56,7 +56,7 @@ html.lenis body {
 
 ::selection {
   background: rgba(0, 229, 196, 0.22);
-  color: #f0ede6;
+  color: #ece6da;
 }
 
 ::-webkit-scrollbar {
@@ -107,6 +107,32 @@ html.lenis body {
   .reveal-line {
     overflow: hidden;
     display: block;
+  }
+  /* instrument label: the small mono register every chapter speaks in */
+  .label {
+    font-family: 'Martian Mono Variable', ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+  .label-sm {
+    font-family: 'Martian Mono Variable', ui-monospace, monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  /* wide display, tuned: Unbounded runs wide, so it needs negative tracking */
+  .display {
+    font-family: 'Unbounded Variable', Unbounded, ui-sans-serif, sans-serif;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+    text-transform: uppercase;
+  }
+  .hairline {
+    background: linear-gradient(90deg, transparent, rgba(236, 230, 218, 0.18), transparent);
+    height: 1px;
   }
 }
 

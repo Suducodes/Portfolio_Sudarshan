@@ -60,7 +60,7 @@ export default function NavCapsule({ scrollTo, className = '', style }) {
               sfx.tick()
             }}
             data-cursor="hover"
-            className="relative z-10 rounded-full px-2.5 py-1.5 font-body text-[9px] uppercase tracking-[0.1em] text-bone/65 transition-colors duration-300 hover:text-bone sm:px-4 sm:text-[12px] sm:tracking-[0.18em]"
+            className="relative z-10 rounded-full px-2.5 py-1.5 font-mono text-[8.5px] uppercase tracking-[0.08em] text-bone/65 transition-colors duration-300 hover:text-bone sm:px-4 sm:text-[10.5px] sm:tracking-[0.14em]"
           >
             {item.label}
           </button>

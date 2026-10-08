@@ -66,7 +66,7 @@ const frag = /* glsl */ `
     float vig = smoothstep(1.3, 0.18, length(vUv - 0.5));
     col *= 0.30 + 0.62 * vig;
 
-    gl_FragColor = vec4(col * 0.85, uFade); // keep it atmospheric, never loud
+    gl_FragColor = vec4(col * 1.1, uFade); // deep palette, so lift it a touch
   }
 `
 
@@ -79,10 +79,12 @@ export default function Nebula() {
       uTime: { value: 0 },
       uScroll: { value: 0 },
       uAspect: { value: 1 },
-      uVoid: { value: new THREE.Color('#05080b') },
-      uTeal: { value: new THREE.Color('#00E5C4') },
-      uViolet: { value: new THREE.Color('#8b7bd8') },
-      uCrimson: { value: new THREE.Color('#C1121F') },
+      // one restrained atmosphere: smoke, not colour washes. The page used to
+      // shift bright teal → violet → crimson and read like three different sites.
+      uVoid: { value: new THREE.Color('#040608') },
+      uTeal: { value: new THREE.Color('#0d4f49') },
+      uViolet: { value: new THREE.Color('#16223d') },
+      uCrimson: { value: new THREE.Color('#3b1016') },
       uFade: { value: 1 },
     }),
     []

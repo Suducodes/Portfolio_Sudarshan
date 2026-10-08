@@ -3,21 +3,19 @@ import { skillGroups } from '../data/resume'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import SynapseMap from '../components/SynapseMap'
 import RibbonRack from '../components/RibbonRack'
+import ChapterMark from '../components/ChapterMark'
 
 export default function Skills() {
   // the net needs room to breathe — phones get the grouped chips instead
   const wide = useMediaQuery('(min-width: 880px)')
 
   return (
-    <section className="relative w-full px-6 py-32 sm:px-10">
+    <section id="capabilities" className="relative w-full px-6 py-32 sm:px-10">
       <div className="mx-auto max-w-5xl">
-        <Reveal as="p" className="mb-4 flex items-center gap-4 font-body text-[11px] uppercase tracking-[0.4em] text-teal/70">
-          <span className="inline-block h-px w-12 bg-teal/50" />
-          Capabilities
-        </Reveal>
+        <ChapterMark n="06" title="Capabilities" meta="34 tools · 6 domains" className="mb-8" />
         <RevealLines
           as="h2"
-          className="mb-4 font-serif text-[clamp(2rem,5vw,4rem)] font-500 uppercase leading-[0.95] tracking-tight text-bone"
+          className="display mb-5 text-[clamp(1.6rem,4.4vw,3.6rem)] font-[600] text-bone"
           lines={[<>Built across</>, <span key="m" className="text-teal">wet &amp; dry.</span>]}
         />
 
@@ -60,10 +58,7 @@ export default function Skills() {
         )}
 
         {/* the rack */}
-        <Reveal as="p" className="mb-6 mt-24 flex items-center gap-4 font-body text-[11px] uppercase tracking-[0.4em] text-teal/70">
-          <span className="inline-block h-px w-12 bg-teal/50" />
-          Awards & Honours
-        </Reveal>
+        <ChapterMark n="07" title="Honours — the ribbon rack" meta="6 decorations" className="mb-8 mt-28" />
         <RibbonRack />
       </div>
     </section>

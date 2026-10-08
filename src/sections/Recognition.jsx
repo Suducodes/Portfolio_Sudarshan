@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { gsap } from '../lib/scroll'
 import { timeline } from '../data/timeline'
 import { Reveal } from '../components/anim/Reveal'
+import ChapterMark from '../components/ChapterMark'
 
 export default function Recognition() {
   const lineRef = useRef(null)
@@ -27,13 +28,10 @@ export default function Recognition() {
   }, [])
 
   return (
-    <section className="relative w-full px-6 py-32 sm:px-10">
+    <section id="vitals" className="relative w-full px-6 py-32 sm:px-10">
       <div className="mx-auto max-w-3xl">
-        <Reveal as="p" className="mb-4 flex items-center gap-4 font-body text-[11px] uppercase tracking-[0.4em] text-teal/70">
-          <span className="inline-block h-px w-12 bg-teal/50" />
-          The Recognition
-        </Reveal>
-        <Reveal as="h2" delay={0.05} className="mb-16 font-serif text-[clamp(2rem,5vw,4rem)] font-500 leading-tight tracking-tight text-bone">
+        <ChapterMark n="09" title="Vitals — the years" meta="2019 — 2026" className="mb-8" />
+        <Reveal as="h2" delay={0.05} className="display mb-16 text-[clamp(1.5rem,4vw,3.2rem)] font-[600] text-bone">
           A vitals trace of the <span className="text-teal">years.</span>
         </Reveal>
 
@@ -52,22 +50,19 @@ export default function Recognition() {
                 <span
                   className="absolute -left-[27px] top-1.5 h-3 w-3 rounded-full"
                   style={{
-                    background: item.peak ? '#C1121F' : '#F0EDE6',
-                    boxShadow: item.peak
-                      ? '0 0 16px rgba(193,18,31,0.9)'
-                      : '0 0 12px rgba(0,229,196,0.7)',
+                    background: item.peak ? '#E0303A' : '#ECE6DA',
+                    boxShadow: item.peak ? '0 0 16px rgba(224,48,58,0.9)' : '0 0 12px rgba(0,229,196,0.7)',
                   }}
                 />
                 {item.peak && (
                   <span className="absolute -left-[31px] top-[2px] h-5 w-5 rounded-full bg-crimson/20 animate-pulse-dot" />
                 )}
-                <p
-                  className="font-display text-xs font-600 tracking-[0.2em]"
-                  style={{ color: item.peak ? '#ff6b75' : '#00E5C4' }}
-                >
+                <p className="label-sm" style={{ color: item.peak ? '#ff6b75' : '#00E5C4' }}>
                   {item.year}
                 </p>
-                <p className="mt-1.5 font-serif text-xl text-bone">{item.title}</p>
+                <p className="display mt-2 text-[clamp(0.95rem,1.6vw,1.2rem)] font-[560] normal-case tracking-[-0.02em] text-bone">
+                  {item.title}
+                </p>
                 <p className="mt-1 font-body text-[13px] text-bone/45">{item.desc}</p>
               </Reveal>
             ))}

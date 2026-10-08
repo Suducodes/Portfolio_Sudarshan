@@ -12,6 +12,9 @@ const item = {
   hidden: { opacity: 0, y: 22, filter: 'blur(8px)' },
   show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.7, ease } },
 }
+const pad = (n) => String(n).padStart(2, '0')
+// internal links (the TENCON page) live under this site's base path
+const resolve = (href) => (/^https?:/.test(href) ? href : asset(href))
 
 export default function ProjectDetail({ project, index, total, onClose, onNav }) {
   useEffect(() => {
@@ -39,81 +42,106 @@ export default function ProjectDetail({ project, index, total, onClose, onNav })
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
         >
-          {/* blurred takeover backdrop */}
-          <div
-            className="absolute inset-0 bg-void/85 backdrop-blur-2xl"
-            onClick={onClose}
-          />
+          <div className="absolute inset-0 bg-void/88 backdrop-blur-2xl" onClick={onClose} />
 
           <motion.article
             key={project.id}
             variants={stagger}
             initial="hidden"
             animate="show"
-            className="relative z-10 grid max-h-full w-full max-w-6xl grid-cols-1 items-center gap-8 overflow-y-auto md:grid-cols-2 md:gap-14"
+            className="relative z-10 grid max-h-full w-full max-w-6xl grid-cols-1 items-center gap-8 overflow-y-auto md:grid-cols-[1.1fr_1fr] md:gap-14"
+            data-lenis-prevent
           >
-            {/* visual */}
             <motion.figure
               variants={item}
-              className="relative aspect-[4/3] w-full overflow-hidden border p-3"
-              style={{ borderColor: `${project.color}40` }}
+              className="relative aspect-[16/10] w-full overflow-hidden rounded-[18px]"
+              style={{ border: `1px solid ${project.color}40`, boxShadow: `0 40px 120px -50px ${project.color}55` }}
             >
-              <div className="relative h-full w-full overflow-hidden bg-void">
-                <ProjectMotif motif={project.motif} color={project.color} className="absolute inset-0 h-full w-full" />
-                <div
-                  className="pointer-events-none absolute inset-0"
-                  style={{ background: `radial-gradient(130% 100% at 50% 120%, ${project.color}22, transparent 55%)` }}
-                />
-              </div>
+              {project.image ? (
+                <img src={asset(project.image)} alt={project.title} className="absolute inset-0 h-full w-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 bg-void-2">
+                  <ProjectMotif motif="ecg" color={project.color} className="absolute inset-0 h-full w-full" />
+                </div>
+              )}
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{ background: `linear-gradient(115deg, rgba(255,255,255,0.12), transparent 40%)` }}
+              />
             </motion.figure>
 
-            {/* info */}
             <div className="flex flex-col">
               <motion.div variants={item} className="flex items-center gap-4">
-                <span className="font-body text-sm tracking-[0.3em]" style={{ color: project.color }}>
-                  [{project.index}]
+                <span className="label" style={{ color: project.color }}>
+                  {pad(index + 1)} / {pad(total)}
                 </span>
                 <span className="h-px flex-1" style={{ background: `${project.color}40` }} />
-                <span className="font-body text-[11px] uppercase tracking-[0.25em] text-bone/40">
-                  {project.date}
+                <span className="label-sm text-bone/45">
+                  {project.year} · {project.status}
                 </span>
               </motion.div>
 
-              <motion.h2
-                variants={item}
-                className="mt-5 font-serif text-[clamp(2.2rem,5vw,4rem)] font-500 uppercase leading-[0.95] tracking-tight text-bone"
-              >
+              <motion.h2 variants={item} className="display mt-5 text-[clamp(1.7rem,4vw,3.2rem)] font-[620] text-bone">
                 {project.title}
               </motion.h2>
-              <motion.p variants={item} className="mt-2 font-body text-base text-bone/55">
+              <motion.p variants={item} className="mt-3 font-body text-base text-bone/60">
                 {project.subtitle}
               </motion.p>
 
-              {project.featured && (
+              {project.kicker && (
                 <motion.p
                   variants={item}
-                  className="mt-4 inline-flex w-fit rounded-full px-3 py-1 font-body text-[11px] uppercase tracking-[0.15em]"
-                  style={{ background: `${project.color}14`, color: project.color }}
+                  className="label-sm mt-4 inline-flex w-fit rounded-full px-3 py-1.5"
+                  style={{ background: `${project.color}18`, color: project.color }}
                 >
-                  ★ {project.featured}
+                  ★ {project.kicker}
                 </motion.p>
               )}
 
               <motion.p variants={item} className="mt-6 max-w-xl font-body text-[15px] leading-relaxed text-bone/80">
                 {project.detail}
               </motion.p>
+              {project.credit && (
+                <motion.p variants={item} className="label-sm mt-4 text-bone/40">
+                  {project.credit}
+                </motion.p>
+              )}
 
               <motion.div variants={item} className="mt-6 flex flex-wrap gap-2">
                 {project.stack.map((s) => (
-                  <span key={s} className="rounded-md bg-bone/5 px-2.5 py-1 font-body text-[11px] tracking-wide text-bone/65">
+                  <span key={s} className="rounded-md border border-bone/10 px-2.5 py-1 font-mono text-[10px] tracking-wide text-bone/65">
                     {s}
                   </span>
                 ))}
               </motion.div>
+
+              {(project.href || project.repo) && (
+                <motion.div variants={item} className="mt-8 flex flex-wrap gap-3">
+                  {project.href && (
+                    <a
+                      href={resolve(project.href)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="label rounded-full bg-teal px-5 py-3 text-[10px] text-void transition-shadow hover:shadow-[0_0_40px_-8px_rgba(0,229,196,0.8)]"
+                    >
+                      Open live ↗
+                    </a>
+                  )}
+                  {project.repo && (
+                    <a
+                      href={project.repo}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="label rounded-full border border-bone/20 px-5 py-3 text-[10px] text-bone/80 transition-colors hover:border-teal/50 hover:text-teal"
+                    >
+                      Source ↗
+                    </a>
+                  )}
+                </motion.div>
+              )}
             </div>
           </motion.article>
 
-          {/* close */}
           <button
             onClick={onClose}
             aria-label="Close"
@@ -122,8 +150,7 @@ export default function ProjectDetail({ project, index, total, onClose, onNav })
             ✕
           </button>
 
-          {/* prev / next */}
-          <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-6 font-body text-[11px] uppercase tracking-[0.25em]">
+          <div className="label-sm absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-6">
             <button onClick={() => onNav(-1)} className="text-bone/55 transition-colors hover:text-teal">
               ← Prev
             </button>

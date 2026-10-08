@@ -17,23 +17,39 @@ export const timeline = [
   {
     year: '2025 · Jan',
     title: 'Republic Day Camp, New Delhi',
-    desc: 'Gold Best Cadet of TN · 4th place, All India Best Cadet.',
+    desc: 'Gold Best Cadet of Tamil Nadu · 4th, All India Best Cadet.',
     peak: true,
   },
   {
     year: '2025',
     title: 'Technical Lead, IEEE EMBS',
-    desc: 'Leading projects & workshops · coronary-segmentation research begins.',
+    desc: 'Workshops, projects — and coronary-segmentation research begins.',
   },
   {
     year: '2026 · Feb',
     title: 'Intern, UnivLabs Technologies',
-    desc: 'Architecting Bio-Vision — touchless surgical DICOM navigation.',
+    desc: 'Surgical modules team.',
   },
   {
     year: '2026 · Jul',
-    title: 'EMBC 2026, Toronto 🇨🇦',
-    desc: 'Paper #4706 accepted — presenting on the world stage.',
+    title: 'IEEE EMBC 2026 · Toronto',
+    desc: 'Paper #4706 — Bio-Vision on the world stage.',
+    peak: true,
+  },
+  {
+    year: '2026 · Jul',
+    title: 'President, BMESI',
+    desc: "Elected to lead the department's Biomedical Engineering Society.",
+  },
+  {
+    year: '2026 · Oct',
+    title: "IGNUZ'26 · Coordinator",
+    desc: 'National-level symposium of our department, 9–10 October.',
+  },
+  {
+    year: '2026',
+    title: 'IEEE TENCON 2026 · Bali',
+    desc: 'Poster P-A05 — Bio-Vision Surgical.',
     peak: true,
   },
 ]

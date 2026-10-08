@@ -8,9 +8,11 @@ import ProjectDetail from './components/ProjectDetail'
 import { projects } from './data/projects'
 
 import Hero from './sections/Hero'
-import Tagline from './sections/Tagline'
+import Premise from './sections/Premise'
 import Works from './sections/Works'
-import Research from './sections/Research'
+import Index from './sections/Index'
+import FlightLog from './sections/FlightLog'
+import Office from './sections/Office'
 import Skills from './sections/Skills'
 import Origin from './sections/Origin'
 import Recognition from './sections/Recognition'
@@ -25,9 +27,12 @@ import { sfx } from './lib/sfx'
 
 const BackgroundFX = lazy(() => import('./components/fx/BackgroundFX'))
 
+const cl = (v) => Math.max(0, Math.min(1, v))
+const smooth = (v) => v * v * (3 - 2 * v)
+
 export default function App() {
   const [ready, setReady] = useState(false)
-  const [openIdx, setOpenIdx] = useState(null)
+  const [openId, setOpenId] = useState(null)
   const reducedMotion = usePrefersReducedMotion()
   const { on: soundOn, toggle: toggleSound } = useAmbientSound()
   const lenisRef = useRef(null)
@@ -53,26 +58,29 @@ export default function App() {
     return () => (ric ? window.cancelIdleCallback?.(id) : clearTimeout(id))
   }, [reducedMotion])
 
-  const openProject = useCallback((i) => {
-    setOpenIdx(i)
+  const openProject = useCallback((id) => {
+    setOpenId(id)
     sfx.whoosh()
     lenisRef.current?.stop()
   }, [])
   const closeProject = useCallback(() => {
-    setOpenIdx(null)
+    setOpenId(null)
     lenisRef.current?.start()
   }, [])
-  const navProject = useCallback(
-    (dir) => setOpenIdx((idx) => (idx + dir + projects.length) % projects.length),
-    []
-  )
+  const navProject = useCallback((dir) => {
+    setOpenId((id) => {
+      const i = projects.findIndex((p) => p.id === id)
+      return projects[(i + dir + projects.length) % projects.length].id
+    })
+  }, [])
 
   useSmoothScroll({
     enabled: !reducedMotion,
     onReady: (lenis) => {
       lenisRef.current = lenis
-      lenis.on('scroll', ({ progress }) => {
+      lenis.on('scroll', ({ progress, velocity }) => {
         scrollState.progress = progress || 0
+        scrollState.velocity = velocity || 0
       })
     },
   })
@@ -88,37 +96,57 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [reducedMotion])
 
-  // heart presence: slides up from below as Work approaches, out the top after
+  /* The WebGL layer's choreography, read straight off the chapters' positions.
+     The heart rises into the premise as a planet, dives into the works
+     descent, and leaves after the last project; the globe and the portal
+     each own their chapter. */
   useEffect(() => {
     let raf = 0
-    const cl = (v) => Math.max(0, Math.min(1, v))
     const compute = () => {
       raf = 0
-      const work = document.getElementById('work')
-      if (!work) return
-      const r = work.getBoundingClientRect()
       const vh = window.innerHeight
-      // rise from below as Work approaches, exit up as it leaves — no pop
-      const enter = cl(1 - r.top / (vh * 0.6))
-      const exit = cl(1 - r.bottom / (vh * 0.6))
-      scrollState.heartReveal = enter * (1 - exit)
-      scrollState.heartY = (1 - enter) * -6 + exit * 6
+      const premise = document.getElementById('premise')
+      const work = document.getElementById('work')
+      if (premise && work) {
+        const pr = premise.getBoundingClientRect()
+        const wr = work.getBoundingClientRect()
+        const pEnter = cl(1 - pr.top / (vh * 0.9))
+        const wEnter = cl(1 - wr.top / vh)
+        const exit = cl(1 - wr.bottom / (vh * 0.6))
+        scrollState.premiseP = cl(-pr.top / Math.max(1, pr.height - vh))
+        scrollState.heartMode = smooth(wEnter)
+        scrollState.heartReveal = smooth(pEnter) * (1 - exit)
+        scrollState.heartY = (1 - smooth(pEnter)) * -5 + exit * 6
+      }
+      const research = document.getElementById('research-pin')
+      if (research) {
+        const r = research.getBoundingClientRect()
+        scrollState.flightReveal = cl(1 - r.top / (vh * 0.8)) * (1 - cl(1 - r.bottom / (vh * 0.7)))
+        scrollState.flightP = cl(-r.top / Math.max(1, r.height - vh))
+      }
+      const contact = document.getElementById('contact')
+      if (contact) {
+        const r = contact.getBoundingClientRect()
+        scrollState.portalReveal = cl(1 - r.top / vh)
+      }
     }
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(compute)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
     const t = setTimeout(compute, 400)
     return () => {
       window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
       clearTimeout(t)
     }
   }, [])
 
   const scrollTo = useCallback((target) => {
     const lenis = lenisRef.current
-    if (target === 0) {
-      lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (typeof target === 'number') {
+      lenis ? lenis.scrollTo(target) : window.scrollTo({ top: target, behavior: 'smooth' })
       return
     }
     const el = document.querySelector(target)
@@ -128,18 +156,17 @@ export default function App() {
     else window.scrollTo({ top: y, behavior: 'smooth' })
   }, [])
 
+  const openIdx = openId ? projects.findIndex((p) => p.id === openId) : -1
+
   return (
     <div className="grain relative">
       {!ready && <Loader onDone={() => setReady(true)} />}
 
-      {/* atmospheric WebGL backdrop over a cheap CSS haze */}
+      {/* one atmosphere, start to finish — colour is spent as light, not washes */}
       {!reducedMotion ? (
         <div
           className="fixed inset-0 z-0 bg-void"
-          style={{
-            backgroundImage:
-              'radial-gradient(70% 55% at 72% 38%, rgba(0,229,196,0.10), transparent 60%), radial-gradient(50% 50% at 25% 80%, rgba(139,123,216,0.07), transparent 70%)',
-          }}
+          style={{ backgroundImage: 'radial-gradient(70% 55% at 70% 38%, rgba(0,229,196,0.05), transparent 62%)' }}
         >
           {/* mount the heavy WebGL scene only after the loader — keeps three.js
               init + shader compile off the hero's paint/interaction path */}
@@ -155,16 +182,15 @@ export default function App() {
         </div>
       )}
 
-      {/* readability scrim. On phones a left→right scrim reads as a vertical band
-          across a narrow portrait screen, so use an even tint there instead. */}
-      <div className="pointer-events-none fixed inset-0 z-[5] bg-void/45 sm:hidden" />
-      <div className="pointer-events-none fixed inset-0 z-[5] hidden bg-gradient-to-r from-void/85 via-void/35 to-transparent sm:block" />
+      {/* a light readability scrim: even on phones (a side scrim bands vertically
+          on a narrow screen), a soft left fall-off on desktop */}
+      <div className="pointer-events-none fixed inset-0 z-[5] bg-void/20 sm:hidden" />
+      <div className="pointer-events-none fixed inset-0 z-[5] hidden bg-gradient-to-r from-void/50 via-transparent to-transparent sm:block" />
 
-      {/* cinematic vignette — binds the imagery + UI into one frame.
-          Softer + wider on phones so it doesn't pinch into side bars. */}
+      {/* cinematic vignette — binds the imagery + UI into one frame */}
       <div
         className="pointer-events-none fixed inset-0 z-[45] hidden sm:block"
-        style={{ background: 'radial-gradient(125% 100% at 50% 42%, transparent 56%, rgba(0,0,0,0.5) 100%)' }}
+        style={{ background: 'radial-gradient(125% 100% at 50% 45%, transparent 58%, rgba(0,0,0,0.55) 100%)' }}
       />
       <div
         className="pointer-events-none fixed inset-0 z-[45] sm:hidden"
@@ -177,9 +203,11 @@ export default function App() {
 
       <main className="relative z-10">
         <Hero ready={ready} scrollTo={scrollTo} />
-        <Tagline />
-        <Works onOpen={openProject} />
-        <Research />
+        <Premise />
+        <Works onOpen={openProject} scrollTo={scrollTo} />
+        <Index onOpen={openProject} />
+        <FlightLog onOpen={openProject} />
+        <Office />
         <Skills />
         <Origin />
         <Recognition />
@@ -188,8 +216,8 @@ export default function App() {
       </main>
 
       <ProjectDetail
-        project={openIdx != null ? projects[openIdx] : null}
-        index={openIdx ?? 0}
+        project={openIdx > -1 ? projects[openIdx] : null}
+        index={Math.max(0, openIdx)}
         total={projects.length}
         onClose={closeProject}
         onNav={navProject}

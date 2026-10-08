@@ -4,22 +4,25 @@ export default {
   theme: {
     extend: {
       colors: {
-        void: '#070A0D',
-        'void-2': '#0B1117',
+        void: '#06080A',
+        'void-2': '#0C1116',
         teal: '#00E5C4',
         'teal-deep': '#0a3b38',
-        bone: '#F0EDE6',
-        'bone-dim': '#8a8f90',
-        crimson: '#C1121F',
+        bone: '#ECE6DA',
+        'bone-dim': '#8f9294',
+        crimson: '#E0303A',
         amber: '#E8A33D',
         violet: '#8b7bd8',
+        brass: '#C9A46A',
       },
       fontFamily: {
-        // monumental wide display (the Parallel-Universe silhouette)
-        serif: ['Tanker', '"Clash Display"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        mega: ['Tanker', '"Clash Display"', 'ui-sans-serif', 'sans-serif'],
-        // bold geometric for project names / UI accents
-        display: ['"Clash Display"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // wide extended display — the Parallel Universe silhouette (they use
+        // Bounded; Unbounded is its open-source sibling)
+        serif: ['"Unbounded Variable"', 'Unbounded', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mega: ['"Unbounded Variable"', 'Unbounded', 'ui-sans-serif', 'sans-serif'],
+        display: ['"Unbounded Variable"', 'Unbounded', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // instrument labels — the Active Theory register (they use NB Architekt)
+        mono: ['"Martian Mono Variable"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
         body: ['Satoshi', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
