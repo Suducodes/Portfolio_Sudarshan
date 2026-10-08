@@ -6,3 +6,4 @@ dist-ssr
 .vite
 npm-debug.log*
 _resume.txt
+shots/
